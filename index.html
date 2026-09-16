@@ -4,10 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#070a0d" />
-    <meta name="description" content="Akribis develops a precision module that makes humanoid robots more accurate for industrial tasks such as welding, bonding, and drilling." />
+    <meta name="description" content="Akribis explores precision enhancement for humanoid robots. Discover the research on calibration, humanoid welding, and our planned tool-correction module for the Unitree G1." />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='13' fill='%23070a0d'/%3E%3Cpath d='M13 48 29 14h7l15 34h-9l-3-8H25l-3 8h-9Zm15-16h8l-4-10-4 10Z' fill='%237de8ff'/%3E%3Ccircle cx='49' cy='15' r='4' fill='%23ff8a3d'/%3E%3C/svg%3E" />
     <title>Akribis — Precision in Motion</title>
     <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./research.css" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -19,8 +20,8 @@
         <span></span><span></span><span></span><span class="sr-only">Open menu</span>
       </button>
       <nav id="main-nav" class="main-nav" aria-label="Main navigation">
-        <a href="#problem">Challenge</a>
-        <a href="#solution">Solution</a>
+        <a href="#research">Research</a>
+        <a href="#solution">Our Approach</a>
         <a href="#applications">Applications</a>
         <a class="nav-cta" href="#partners">Become a Partner</a>
       </nav>
@@ -34,39 +35,107 @@
         <div class="hero-content">
           <p class="eyebrow"><span></span> Precision-enhancing robotics</p>
           <h1 id="hero-title">Macro Reach.<br /><em>Micro Precision.</em></h1>
-          <p class="hero-copy">Akribis develops a compact device that corrects the motion errors of humanoid robots directly at the tool — enabling precise processes on two legs.</p>
+          <p class="hero-copy">Akribis is developing a compact correction module for the Unitree G1. We are investigating how local tool correction can improve precision for industrial tasks.</p>
           <div class="hero-actions">
-            <a class="button button-primary" href="#solution">Our Solution <span aria-hidden="true">↘</span></a>
+            <a class="button button-primary" href="#research">Explore the Research <span aria-hidden="true">↘</span></a>
             <a class="button button-ghost" href="#partners">Support the Project</a>
           </div>
         </div>
         <aside class="precision-card" aria-label="Precision target">
-          <span class="precision-label">Target accuracy</span>
-          <div class="precision-value"><span>cm</span><b>→</b><strong>&lt;1 mm</strong></div>
-          <p>From visible deviation to a controlled tool path.</p>
+          <span class="precision-label">Research target</span>
+          <div class="precision-value"><strong>&lt;1 mm</strong></div>
+          <p>Provisional tool-position target. Test conditions to be defined.</p>
         </aside>
         <p class="concept-note">Concept visualisation</p>
       </section>
 
-      <section class="statement section-pad reveal" id="problem">
-        <div>
-          <p class="section-kicker">01 / The Challenge</p>
-          <h2>Mobility alone does not make a production machine.</h2>
+      <section class="research section-pad" id="research" aria-labelledby="research-title">
+        <span id="problem" aria-hidden="true"></span>
+        <div class="research-heading">
+          <p class="section-kicker">01 / State of the Art</p>
+          <h2 id="research-title">How precise can<br />humanoids become?</h2>
+          <p class="research-lead">From measured improvement to precision at the tool.</p>
         </div>
-        <div class="statement-copy">
-          <p>Humanoid robots can move through human-scale work environments. But working on two legs introduces vibrations and positioning errors — too much for weld seams, adhesive beads, or drill holes.</p>
-          <p>Akribis closes this gap where precision actually matters: between the robot and the tool.</p>
+        <nav class="research-navigation" aria-label="Explore precision research">
+          <button class="research-tab" type="button" data-research-panel="calibration" aria-pressed="true" aria-controls="research-calibration"><span>01</span> Calibration</button>
+          <button class="research-tab" type="button" data-research-panel="welding" aria-pressed="false" aria-controls="research-welding"><span>02</span> Welding</button>
+          <button class="research-tab" type="button" data-research-panel="project" aria-pressed="false" aria-controls="research-project"><span>03</span> Our Challenge</button>
+        </nav>
+
+        <div class="research-panel" id="research-calibration" data-research-content="calibration" role="region" aria-label="Measured improvement through calibration">
+          <div class="research-grid">
+            <div class="research-copy">
+              <p class="research-eyebrow">Research · DLR Agile Justin · 2021</p>
+              <h3>Precision starts with a better model.</h3>
+              <p>Calibration accounts for geometric errors and elastic deformation. In the studied humanoid upper body, researchers reduced the mean absolute end-effector position error from 21 to 3.1 mm.</p>
+              <a class="research-source" href="https://arxiv.org/abs/2311.08333" target="_blank" rel="noopener noreferrer">Read the calibration study <span aria-hidden="true">↗</span></a>
+            </div>
+            <figure class="research-chart">
+              <figcaption>Mean absolute end-effector position error</figcaption>
+              <div class="research-value" aria-live="polite" aria-atomic="true"><strong data-error-value>3.1</strong> <span>mm</span></div>
+              <div class="research-switch" role="group" aria-label="Choose calibration state">
+                <button type="button" data-calibrated="false" aria-pressed="false">Before calibration</button>
+                <button type="button" data-calibrated="true" aria-pressed="true">Calibrated</button>
+              </div>
+              <div class="research-bars" role="img" data-error-chart aria-label="Reference: 21 millimetres before calibration. Selected result: 3.1 millimetres after calibration.">
+                <div class="research-reference"></div>
+                <div class="research-current" data-error-bar></div>
+              </div>
+              <div class="research-scale" aria-hidden="true"><span>0 mm</span><span>21 mm</span></div>
+              <div class="research-legend"><span><i class="research-swatch" aria-hidden="true"></i>Before calibration</span><span><i class="research-swatch is-current" aria-hidden="true"></i>Selected state</span></div>
+              <p class="research-result" data-error-result>Approximately 85% lower mean error</p>
+            </figure>
+          </div>
+          <p class="research-note">Result for the studied humanoid upper body. This is not a general accuracy specification for humanoids or a measurement of welding-path accuracy.</p>
+          <details class="research-details">
+            <summary>Further research: calibration with an RGB camera</summary>
+            <p>A follow-up study used the head-mounted camera and visual markers: 3.9 mm mean error and 9.1 mm in the worst case. Different test conditions apply; these figures are not a direct performance comparison with the 3.1 mm result.</p>
+            <a class="research-source" href="https://arxiv.org/abs/2311.08338" target="_blank" rel="noopener noreferrer">Read the RGB-calibration study (2022) <span aria-hidden="true">↗</span></a>
+          </details>
         </div>
+
+        <div class="research-panel" id="research-welding" data-research-content="welding" role="region" aria-label="Humanoid welding demonstration" hidden>
+          <div class="research-grid">
+            <div class="research-copy">
+              <p class="research-eyebrow">Demonstration · Persona AI · July 2026</p>
+              <h3>A humanoid guides the welding torch.</h3>
+              <p>Persona AI demonstrated a humanoid robot welding in an industrial workshop. An expert operated the robot remotely during the demonstration.</p>
+              <a class="research-source" href="https://persona.ai/robot-welding-in-a-real-industrial-environment/" target="_blank" rel="noopener noreferrer">View the welding demonstration <span aria-hidden="true">↗</span></a>
+            </div>
+            <dl class="research-evidence">
+              <div class="research-evidence-item"><dt>Demonstrated operation</dt><dd>Teleoperated welding</dd></div>
+              <div class="research-evidence-item"><dt>Measured torch-path accuracy</dt><dd>Not reported</dd></div>
+              <div class="research-evidence-item"><dt>Verified weld quality</dt><dd>Not reported</dd></div>
+            </dl>
+          </div>
+          <p class="research-note">The publication shows a practical demonstration. It does not establish autonomous production welding or a quantified level of tool accuracy.</p>
+        </div>
+
+        <div class="research-panel" id="research-project" data-research-content="project" role="region" aria-label="The Akribis research question" hidden>
+          <div class="research-copy">
+            <p class="research-eyebrow">Our approach · Unitree G1 · Project start</p>
+            <h3>How much precision can we gain directly at the tool?</h3>
+            <p>We are investigating an additional tool-correction module. The challenge is to detect and compensate deviations quickly within a limited weight, size, and correction range.</p>
+          </div>
+          <div class="research-steps" role="group" aria-label="Explore our planned investigation">
+            <button type="button" class="research-step" data-research-step="0" aria-pressed="true" aria-controls="research-step-description"><span>01 / Baseline</span><strong>Measure deviations</strong></button>
+            <button type="button" class="research-step" data-research-step="1" aria-pressed="false" aria-controls="research-step-description"><span>02 / Development</span><strong>Design the correction</strong></button>
+            <button type="button" class="research-step" data-research-step="2" aria-pressed="false" aria-controls="research-step-description"><span>03 / Validation</span><strong>Compare the effect</strong></button>
+          </div>
+          <p class="research-step-description" id="research-step-description" data-research-step-description aria-live="polite">Measure the tool position relative to the workpiece and characterise the errors under defined conditions.</p>
+          <p class="research-note">Planned approach · no Akribis measurement results yet. Welding is a potential future application.</p>
+        </div>
+        <div class="research-footer"><span data-research-status aria-live="polite">01 / Measured research result</span><span>Sources reviewed · September 2026</span></div>
       </section>
 
       <section class="precision-demo section-pad" aria-labelledby="demo-title">
         <div class="demo-intro reveal">
           <p class="section-kicker">The Principle</p>
           <h2 id="demo-title">Micro-correction instead of a perfect overall robot.</h2>
-          <p>The device handles the fine correction while the humanoid robot performs the large movement and positioning.</p>
+          <p>Our concept assigns fine correction to a local module while the humanoid robot performs the larger movements. The comparison illustrates the principle, not measured Akribis performance.</p>
           <div class="mode-switch" role="group" aria-label="Select schematic comparison">
-            <button type="button" data-mode="robot" class="active">Robot only</button>
-            <button type="button" data-mode="akribis">With Akribis</button>
+            <button type="button" data-mode="robot" class="active" aria-pressed="true">Robot only</button>
+            <button type="button" data-mode="akribis" aria-pressed="false">With correction</button>
           </div>
         </div>
         <div class="path-visual reveal" data-precision-demo data-mode="robot">
@@ -92,39 +161,39 @@
         <div class="section-heading reveal">
           <p class="section-kicker">02 / Our Approach</p>
           <h2>Precision sits at the decisive point.</h2>
-          <p>A compact add-on actuator at the end-effector corrects small deviations without replacing the capabilities of the humanoid robot.</p>
+          <p>We are exploring a compact add-on actuator at the end-effector to correct small deviations while retaining the humanoid robot's larger range of motion.</p>
         </div>
         <div class="principle-grid">
           <article class="principle reveal">
             <span class="principle-number">01</span>
             <div class="principle-icon" aria-hidden="true"><span class="pulse"></span></div>
             <h3>Detect deviation</h3>
-            <p>The actual tool position is compared against the planned path.</p>
+            <p>Measure the actual tool position relative to the workpiece and compare it with the planned path.</p>
           </article>
           <article class="principle reveal">
             <span class="principle-number">02</span>
             <div class="principle-icon correction" aria-hidden="true"><span></span></div>
             <h3>Compensate micro-errors</h3>
-            <p>Short, fast correction movements compensate residual errors close to the process.</p>
+            <p>Develop short, fast correction movements to compensate residual errors close to the process.</p>
           </article>
           <article class="principle reveal">
             <span class="principle-number">03</span>
             <div class="principle-icon target" aria-hidden="true"><span></span></div>
-            <h3>Execute with precision</h3>
-            <p>The tool path remains stable — even as the robot body moves.</p>
+            <h3>Validate the improvement</h3>
+            <p>Compare tool guidance with and without correction under the same movement and load conditions.</p>
           </article>
         </div>
       </section>
 
       <section class="applications section-pad" id="applications">
         <div class="application-heading reveal">
-          <p class="section-kicker">03 / Applications</p>
-          <h2>One device.<br />Multiple industrial processes.</h2>
+          <p class="section-kicker">03 / Potential Applications</p>
+          <h2>Where better tool guidance could help.</h2>
         </div>
         <div class="application-list">
-          <article class="application reveal"><span>01</span><h3>Welding</h3><p>Consistent seam guidance despite movement of the robot platform.</p><b aria-hidden="true">↗</b></article>
-          <article class="application reveal"><span>02</span><h3>Bonding</h3><p>Reproducible paths and uniform material application.</p><b aria-hidden="true">↗</b></article>
-          <article class="application reveal"><span>03</span><h3>Drilling</h3><p>Precise positioning at hard-to-reach work locations.</p><b aria-hidden="true">↗</b></article>
+          <article class="application reveal"><span>01</span><h3>Welding</h3><p>Investigate steadier torch guidance along a weld seam.</p><b aria-hidden="true">↗</b></article>
+          <article class="application reveal"><span>02</span><h3>Bonding</h3><p>Explore repeatable tool paths for more uniform material application.</p><b aria-hidden="true">↗</b></article>
+          <article class="application reveal"><span>03</span><h3>Drilling</h3><p>Assess positioning accuracy and stability under process forces.</p><b aria-hidden="true">↗</b></article>
         </div>
       </section>
 
@@ -155,5 +224,6 @@
       <p>© <span data-year></span> Akribis</p>
     </footer>
     <script src="./script.js"></script>
+    <script src="./research.js"></script>
   </body>
 </html>
