@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#070a0d" />
+    <meta name="description" content="Akribis entwickelt ein Präzisionsmodul, das humanoide Roboter für industrielle Aufgaben wie Schweißen, Kleben und Bohren genauer macht." />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='13' fill='%23070a0d'/%3E%3Cpath d='M13 48 29 14h7l15 34h-9l-3-8H25l-3 8h-9Zm15-16h8l-4-10-4 10Z' fill='%237de8ff'/%3E%3Ccircle cx='49' cy='15' r='4' fill='%23ff8a3d'/%3E%3C/svg%3E" />
+    <title>Akribis — Precision in Motion</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Zum Inhalt springen</a>
+    <header class="site-header" data-header>
+      <a class="brand" href="#top" aria-label="Akribis Startseite">
+        <span class="brand-mark" aria-hidden="true">A</span>
+        <span>AKRIBIS</span>
+      </a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-nav">
+        <span></span><span></span><span></span><span class="sr-only">Menü öffnen</span>
+      </button>
+      <nav id="main-nav" class="main-nav" aria-label="Hauptnavigation">
+        <a href="#problem">Herausforderung</a>
+        <a href="#solution">Lösung</a>
+        <a href="#applications">Anwendungen</a>
+        <a class="nav-cta" href="#partners">Partner werden</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <img class="hero-image" src="./assets/akribis-welding-concept.png" alt="Konzeptvisualisierung eines humanoiden Roboters beim Präzisionsschweißen" />
+        <div class="hero-shade"></div>
+        <div class="hero-grid" aria-hidden="true"></div>
+        <div class="hero-content">
+          <p class="eyebrow"><span></span> Precision-enhancing robotics</p>
+          <h1 id="hero-title">Humanoide Kraft.<br /><em>Industrielle Präzision.</em></h1>
+          <p class="hero-copy">Akribis entwickelt ein kompaktes Device, das die Bewegungsfehler humanoider Roboter direkt am Werkzeug korrigiert — für präzise Prozesse auf zwei Beinen.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#solution">Unsere Lösung <span aria-hidden="true">↘</span></a>
+            <a class="button button-ghost" href="#partners">Projekt unterstützen</a>
+          </div>
+        </div>
+        <aside class="precision-card" aria-label="Präzisionsziel">
+          <span class="precision-label">Zielgenauigkeit</span>
+          <div class="precision-value"><span>cm</span><b>→</b><strong>&lt;1 mm</strong></div>
+          <p>Von sichtbarer Abweichung zu kontrollierter Werkzeugbahn.</p>
+        </aside>
+        <p class="concept-note">Konzeptvisualisierung</p>
+      </section>
+
+      <section class="statement section-pad reveal" id="problem">
+        <div>
+          <p class="section-kicker">01 / Die Herausforderung</p>
+          <h2>Mobilität allein macht noch keine Produktionsmaschine.</h2>
+        </div>
+        <div class="statement-copy">
+          <p>Humanoide Roboter können sich in menschengerechten Arbeitsumgebungen bewegen. Doch beim Arbeiten auf zwei Beinen entstehen Schwingungen und Positionsfehler — zu viel für Schweißnähte, Kleberaupen oder Bohrungen.</p>
+          <p>Akribis schließt diese Lücke dort, wo Präzision tatsächlich zählt: zwischen Roboter und Werkzeug.</p>
+        </div>
+      </section>
+
+      <section class="precision-demo section-pad" aria-labelledby="demo-title">
+        <div class="demo-intro reveal">
+          <p class="section-kicker">Das Prinzip</p>
+          <h2 id="demo-title">Mikrokorrektur statt perfektem Gesamtroboter.</h2>
+          <p>Das Device übernimmt die feine Korrektur, während der humanoide Roboter die große Bewegung und Positionierung ausführt.</p>
+          <div class="mode-switch" role="group" aria-label="Schematischen Vergleich auswählen">
+            <button type="button" data-mode="robot" class="active">Nur Roboter</button>
+            <button type="button" data-mode="akribis">Mit Akribis</button>
+          </div>
+        </div>
+        <div class="path-visual reveal" data-precision-demo data-mode="robot">
+          <div class="visual-topline"><span>Werkzeugbahn / schematisch</span><span data-mode-label>Makrobewegung</span></div>
+          <svg viewBox="0 0 720 390" role="img" aria-label="Schematischer Vergleich einer ungenauen und einer korrigierten Werkzeugbahn">
+            <defs>
+              <pattern id="minorGrid" width="24" height="24" patternUnits="userSpaceOnUse">
+                <path d="M 24 0 L 0 0 0 24" fill="none" stroke="rgba(125,232,255,.09)" stroke-width="1" />
+              </pattern>
+              <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+            <rect width="720" height="390" fill="url(#minorGrid)" />
+            <path class="target-path" d="M65 205 C185 90 280 310 402 190 S575 108 660 202" />
+            <path class="robot-path" d="M65 225 C165 72 281 342 401 162 S565 133 660 178" />
+            <path class="corrected-path" d="M65 207 C184 95 282 304 402 193 S576 111 660 200" filter="url(#glow)" />
+            <g class="crosshair" transform="translate(660 202)"><circle r="18"/><circle r="5"/><path d="M-29 0h18M11 0h18M0-29v18M0 11v18"/></g>
+          </svg>
+          <div class="visual-legend"><span><i class="legend-target"></i>Sollbahn</span><span data-path-legend><i class="legend-actual"></i>Abweichung</span></div>
+        </div>
+      </section>
+
+      <section class="solution section-pad" id="solution">
+        <div class="section-heading reveal">
+          <p class="section-kicker">02 / Unser Ansatz</p>
+          <h2>Die Präzision sitzt am entscheidenden Punkt.</h2>
+          <p>Ein kompakter Zusatzaktor am Endeffektor korrigiert kleine Abweichungen, ohne die Fähigkeiten des humanoiden Roboters zu ersetzen.</p>
+        </div>
+        <div class="principle-grid">
+          <article class="principle reveal">
+            <span class="principle-number">01</span>
+            <div class="principle-icon" aria-hidden="true"><span class="pulse"></span></div>
+            <h3>Abweichung erfassen</h3>
+            <p>Die tatsächliche Werkzeugposition wird der geplanten Bahn gegenübergestellt.</p>
+          </article>
+          <article class="principle reveal">
+            <span class="principle-number">02</span>
+            <div class="principle-icon correction" aria-hidden="true"><span></span></div>
+            <h3>Mikrofehler ausgleichen</h3>
+            <p>Kurze, schnelle Korrekturbewegungen kompensieren Restfehler nahe am Prozess.</p>
+          </article>
+          <article class="principle reveal">
+            <span class="principle-number">03</span>
+            <div class="principle-icon target" aria-hidden="true"><span></span></div>
+            <h3>Präzise ausführen</h3>
+            <p>Die Werkzeugbahn bleibt stabil — auch wenn sich der Roboterkörper bewegt.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="applications section-pad" id="applications">
+        <div class="application-heading reveal">
+          <p class="section-kicker">03 / Anwendungen</p>
+          <h2>Ein Device.<br />Mehrere industrielle Prozesse.</h2>
+        </div>
+        <div class="application-list">
+          <article class="application reveal"><span>01</span><h3>Schweißen</h3><p>Konstante Nahtführung trotz Bewegung der Roboterplattform.</p><b aria-hidden="true">↗</b></article>
+          <article class="application reveal"><span>02</span><h3>Kleben</h3><p>Reproduzierbare Bahnen und gleichmäßiger Materialauftrag.</p><b aria-hidden="true">↗</b></article>
+          <article class="application reveal"><span>03</span><h3>Bohren</h3><p>Gezielte Positionierung an schwer erreichbaren Arbeitsorten.</p><b aria-hidden="true">↗</b></article>
+        </div>
+      </section>
+
+      <section class="partners section-pad" id="partners">
+        <div class="partners-panel reveal">
+          <div class="partners-copy">
+            <p class="section-kicker">04 / Partnerschaft</p>
+            <h2>Präzision entsteht nicht allein.</h2>
+            <p>Wir suchen Partner, die mit uns die nächste Generation industrieller Robotik realisieren — mit Know-how, Komponenten, Fertigungsmöglichkeiten oder finanzieller Unterstützung.</p>
+          </div>
+          <div class="support-grid" aria-label="Möglichkeiten der Unterstützung">
+            <div><span>01</span><strong>Engineering-Know-how</strong></div>
+            <div><span>02</span><strong>Komponenten & Sensorik</strong></div>
+            <div><span>03</span><strong>Fertigung & Testing</strong></div>
+            <div><span>04</span><strong>Finanzielle Förderung</strong></div>
+          </div>
+          <div class="contact-row" id="kontakt">
+            <p><strong>Interesse an einer Partnerschaft?</strong><br />Kontaktangaben werden mit dem finalen Projektauftritt ergänzt.</p>
+            <a class="button button-light" href="#top">Akribis entdecken <span aria-hidden="true">↑</span></a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">A</span><span>AKRIBIS</span></a>
+      <p>Precision in motion.</p>
+      <p>© <span data-year></span> Akribis</p>
+    </footer>
+    <script src="./script.js"></script>
+  </body>
+</html>
