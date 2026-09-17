@@ -36,7 +36,85 @@ npm run preview    # serve dist/ locally to test the build
 2. Upload the **contents** of `dist/` to the web root of the host (ETH hosting or external – TBD).
 3. Recommended on the host: gzip/brotli compression and long cache headers for `/_astro/*` and `/fonts/*` (file names in `_astro/` are content-hashed).
 
-**Domain:** set once in `astro.config.mjs` (`SITE_URL`, currently the placeholder `https://akribis.ethz.ch`). Canonical, hreflang and Open Graph URLs are derived from it. If the site is served from a sub-folder, also set `base` in `astro.config.mjs`; all internal links respect it.
+### Domain and sub-path (`SITE_URL`, `BASE_PATH`)
+
+Both are read from environment variables at build time (see `astro.config.mjs`) – no code change is needed to switch hosts:
+
+| Variable | Meaning | Default |
+|---|---|---|
+| `SITE_URL` | Origin of the site, **without** a path. Canonical, hreflang and Open Graph URLs are built from it. | `https://akribis.ethz.ch` (placeholder, subdomain pending) |
+| `BASE_PATH` | Folder the site is served from. Every internal link, asset, font, favicon, the `/` redirect and the 404 page are prefixed with it. | `/` |
+
+A plain `npm run build` therefore still produces the site for `https://akribis.ethz.ch/`.
+
+> **For developers:** never write root-relative URLs (`"/en/…"`, `"/fonts/…"`, `url(/…)`) directly. Use `routeFor(key, lang)` / `routes` for pages and `withBase('/path')` for files from `public/` (both in `src/i18n/utils.ts`). Imported images (`src/assets/`) and bundled CSS/JS get the base path automatically.
+
+### Deploy to GitHub Pages (sub-path)
+
+A GitHub project site is served from a sub-path, e.g. `https://paesk.github.io/Akribis_Website/`. Build with:
+
+```bash
+# bash / macOS / Linux / CI
+SITE_URL=https://paesk.github.io BASE_PATH=/Akribis_Website npm run build
+
+# Git Bash on Windows – MSYS_NO_PATHCONV stops Git Bash from turning /Akribis_Website into C:/Program Files/Git/…
+MSYS_NO_PATHCONV=1 SITE_URL=https://paesk.github.io BASE_PATH=/Akribis_Website npm run build
+```
+
+```powershell
+# PowerShell
+$env:SITE_URL = 'https://paesk.github.io'; $env:BASE_PATH = '/Akribis_Website'; npm run build
+Remove-Item Env:SITE_URL, Env:BASE_PATH   # afterwards, so later builds use the defaults again
+```
+
+Test it locally with `npm run preview` (same variables set) → http://localhost:4321/Akribis_Website/ – the site is only reachable under the sub-path, exactly like on GitHub Pages.
+
+**Publishing with GitHub Actions** (recommended): in the repository go to *Settings → Pages → Build and deployment → Source: GitHub Actions*, then add `.github/workflows/deploy.yml`:
+
+```yaml
+name: Deploy to GitHub Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+        env:
+          SITE_URL: https://${{ github.repository_owner }}.github.io
+          BASE_PATH: /${{ github.event.repository.name }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+```
+
+**Publishing from a branch** instead: push the contents of `dist/` to e.g. a `gh-pages` branch and select it under *Settings → Pages*. `public/.nojekyll` is copied into `dist/` so GitHub does not run Jekyll, which would drop the `_astro/` folder.
+
+Unknown URLs under the sub-path show the site's own `404.html`. When the site moves to `akribis.ethz.ch`, simply build without the two variables.
 
 ---
 
@@ -206,9 +284,9 @@ No "world's first / unique / only" claims · accuracy figures only as **targets*
 ## 5. Project structure
 
 ```
-astro.config.mjs            site URL (domain), i18n
+astro.config.mjs            site URL + base path (from SITE_URL / BASE_PATH), i18n
 brand/                      original logo files
-public/                     copied as-is: fonts, favicons, videos
+public/                     copied as-is: fonts, favicons, videos, .nojekyll
 src/
   content.config.ts         content schemas (validates all content files)
   content/                  ALL content – see § 3

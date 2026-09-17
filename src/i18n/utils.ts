@@ -33,17 +33,23 @@ export function useTranslations(lang: Lang) {
   };
 }
 
-/** Prefix a site-relative path with the configured base path. */
+/**
+ * Prefix a site-relative path with the configured base path (BASE_PATH, see astro.config.mjs).
+ * Use it for every internal link and every file from public/ – never write "/…" directly.
+ * External URLs (http/https/mailto/…) are returned unchanged.
+ */
 export function withBase(path: string): string {
+  if (/^[a-z][a-z\d+.-]*:/i.test(path)) return path;
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   return `${base}${path.startsWith('/') ? path : `/${path}`}`;
 }
 
 /**
  * Equivalent pages per language – used by the navigation, the EN | DE switch and hreflang links.
+ * Paths are written without the base path; `routes` below adds it.
  * To localise a German URL (e.g. /de/projekt/), change it here AND rename the page file.
  */
-export const routes = {
+const routePaths = {
   home: { en: '/en/', de: '/de/' },
   project: { en: '/en/project/', de: '/de/project/' },
   technology: { en: '/en/technology/', de: '/de/technology/' },
@@ -54,13 +60,21 @@ export const routes = {
   imprint: { en: '/en/imprint/', de: '/de/impressum/' },
 } satisfies Record<string, Record<Lang, string>>;
 
-export type RouteKey = keyof typeof routes;
+export type RouteKey = keyof typeof routePaths;
+
+/** Route table with the base path applied – ready to use as `href`. */
+export const routes = Object.fromEntries(
+  Object.entries(routePaths).map(([key, paths]) => [
+    key,
+    Object.fromEntries(langs.map((lang) => [lang, withBase(paths[lang])])),
+  ]),
+) as Record<RouteKey, Record<Lang, string>>;
 
 /** Pages in the main navigation, in order */
 export const navRoutes = ['project', 'technology', 'progress', 'team', 'partners', 'contact'] as const satisfies RouteKey[];
 
 export function routeFor(key: RouteKey, lang: Lang): string {
-  return withBase(routes[key][lang]);
+  return routes[key][lang];
 }
 
 /** getStaticPaths() result for pages that exist in every language */

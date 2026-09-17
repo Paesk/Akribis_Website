@@ -44,7 +44,6 @@ const panels = await Promise.all(
 );
 
 const pad = (n: number) => String(n).padStart(2, '0');
-const videoSrc = (src: string) => (/^https?:/.test(src) ? src : withBase(src));
 ---
 
 <section id="progress" class="section progress" aria-labelledby="progress-title">
@@ -175,7 +174,7 @@ const videoSrc = (src: string) => (/^https?:/.test(src) ? src : withBase(src));
                   {stage.video && (
                     <figure class="stage-panel__video">
                       <video controls preload="none" playsinline>
-                        <source src={videoSrc(stage.video)} />
+                        <source src={withBase(stage.video)} />
                       </video>
                       <figcaption class="visually-hidden">
                         {t('progress.video')}: {stage.title}

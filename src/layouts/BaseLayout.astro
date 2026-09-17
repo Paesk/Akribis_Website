@@ -19,8 +19,8 @@ const t = useTranslations(lang);
 const pageTitle = title ?? (route === 'home' ? t('meta.title') : `${t(`pages.${route}.title`)} – Akribis`);
 const pageDescription = description ?? (route === 'home' ? t('meta.description') : t(`pages.${route}.description`));
 
-const canonical = new URL(withBase(routes[route][lang]), Astro.site);
-const alternates = langs.map((l) => ({ lang: l, href: new URL(withBase(routes[route][l]), Astro.site).href }));
+const canonical = new URL(routes[route][lang], Astro.site);
+const alternates = langs.map((l) => ({ lang: l, href: new URL(routes[route][l], Astro.site).href }));
 
 const fontFaces = fonts
   .flatMap((font) =>

@@ -25,7 +25,7 @@ const hasMedia = !!(background || backgroundVideo);
       {
         backgroundVideo ? (
           <video class="hero__bg" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
-            <source src={/^https?:/.test(backgroundVideo) ? backgroundVideo : withBase(backgroundVideo)} />
+            <source src={withBase(backgroundVideo)} />
           </video>
         ) : background ? (
           <Picture
