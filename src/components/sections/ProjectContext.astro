@@ -1,0 +1,81 @@
+---
+/** Project page: short Focus Project + lab context below the page title (content: project.md → context). */
+import Heading from '../Heading.astro';
+import Marker from '../Marker.astro';
+import { getSection } from '../../lib/content';
+import { routeFor, useTranslations, type Lang } from '../../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const { data, translationMissing, needsProofreading } = await getSection(lang, 'project');
+const context = data.context;
+---
+
+{
+  context && (
+    <section class="project-context" aria-label={t('project.contextLabel')} lang={translationMissing ? 'en' : undefined}>
+      <div class="container project-context__grid">
+        {(translationMissing || needsProofreading) && (
+          <p class="project-context__marker">
+            <Marker translationMissing={translationMissing} needsProofreading={needsProofreading} />
+          </p>
+        )}
+        {[context.focus, context.lab].map((item, i) => (
+          <div class="project-context__item">
+            <Heading level={2} class="project-context__title">
+              {item.title}
+            </Heading>
+            <p>{item.text}</p>
+            {i === 0 && (
+              <a class="text-link project-context__link" href={`${routeFor('partners', lang)}#partners-focus-title`}>
+                {t('project.focusLink')}
+              </a>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .project-context {
+    padding-block: 0 clamp(2.5rem, 5vw, 3.5rem);
+  }
+  .project-context__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem clamp(2rem, 5vw, 4rem);
+  }
+  .project-context__item {
+    display: grid;
+    align-content: start;
+    gap: 0.5rem;
+    padding-top: 1.25rem;
+    border-top: 2px solid var(--color-text);
+  }
+  .project-context__marker {
+    grid-column: 1 / -1;
+  }
+  .project-context__item :global(.project-context__title) {
+    font-size: var(--step-1);
+  }
+  .project-context__item p {
+    max-width: 58ch;
+    color: var(--color-muted);
+  }
+  .project-context__link {
+    justify-self: start;
+    font-size: 0.9375rem;
+    font-weight: 500;
+  }
+  @media (max-width: 760px) {
+    .project-context__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

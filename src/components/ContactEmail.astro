@@ -1,0 +1,21 @@
+---
+/** Project email – rendered as a visible placeholder (not a link) until confirmed in site.json. */
+import Placeholder from './Placeholder.astro';
+import { site } from '../lib/site';
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+const { address, placeholder } = site.email;
+---
+
+{
+  placeholder ? (
+    <Placeholder inline label={address} class={className} />
+  ) : (
+    <a class:list={['text-link', className]} href={`mailto:${address}`}>
+      {address}
+    </a>
+  )
+}

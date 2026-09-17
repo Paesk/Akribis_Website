@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Placeholder from './Placeholder.astro';
+import { routeFor, useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<BaseLayout lang={lang} route="imprint" title={`${t('imprint.title')} – Akribis`}>
+  <section class="imprint" aria-labelledby="imprint-title">
+    <div class="container imprint__inner">
+      <h1 id="imprint-title">{t('imprint.title')}</h1>
+      <Placeholder label={t('imprint.placeholder')} ratio="16 / 7" />
+      <a class="text-link imprint__back" href={routeFor('home', lang)}>← {t('imprint.back')}</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .imprint {
+    padding-block: clamp(3rem, 8vw, 6rem);
+  }
+  .imprint__inner {
+    display: grid;
+    gap: 1.5rem;
+    max-width: calc(52rem + 2 * var(--gutter));
+  }
+  h1 {
+    font-size: var(--step-3);
+    margin-bottom: 1rem;
+  }
+  .imprint__back {
+    justify-self: start;
+    margin-top: 1rem;
+  }
+</style>

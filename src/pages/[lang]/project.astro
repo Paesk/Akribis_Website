@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHeader from '../../components/PageHeader.astro';
+import ProjectContext from '../../components/sections/ProjectContext.astro';
+import Challenge from '../../components/sections/Challenge.astro';
+import Project from '../../components/sections/Project.astro';
+import Impact from '../../components/sections/Impact.astro';
+import { getSection } from '../../lib/content';
+import { langPaths, useTranslations, type Lang } from '../../i18n/utils';
+
+export function getStaticPaths() {
+  return langPaths();
+}
+
+const lang = Astro.params.lang as Lang;
+const t = useTranslations(lang);
+const hero = await getSection(lang, 'hero');
+---
+
+<BaseLayout lang={lang} route="project">
+  <PageHeader
+    title={t('pages.project.title')}
+    lead={hero.data.subline}
+    translationMissing={hero.translationMissing}
+    needsProofreading={hero.needsProofreading}
+  />
+  <ProjectContext lang={lang} />
+  <Challenge lang={lang} />
+  <Project lang={lang} />
+  <Impact lang={lang} />
+</BaseLayout>

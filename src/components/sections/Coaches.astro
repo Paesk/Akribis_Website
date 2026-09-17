@@ -1,0 +1,106 @@
+---
+import Heading from '../Heading.astro';
+import SectionHeader from '../SectionHeader.astro';
+import Placeholder from '../Placeholder.astro';
+import PersonCard from '../PersonCard.astro';
+import { assetImage, getOrdered, getSection, localize } from '../../lib/content';
+import { useTranslations, type Lang } from '../../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  /** 1 when this section is the main content of its page */
+  level?: 1 | 2;
+  /** Optional section number, e.g. "01" */
+  index?: string;
+}
+
+const { lang, level = 2, index } = Astro.props;
+const t = useTranslations(lang);
+const { data, translationMissing, needsProofreading } = await getSection(lang, 'coaches');
+const coaches = (await getOrdered('coaches')).map((c) => c.data);
+
+// Official logo files still missing – see README "Academic partners"
+const academicPartners = ['ETH Zurich', 'am|z – Advanced Manufacturing Lab'];
+---
+
+<section id="coaches" class="section coaches" aria-labelledby="coaches-title">
+  <div class="container">
+    <SectionHeader
+      index={index}
+      level={level}
+      kicker={t('sections.coaches')}
+      title={data.title}
+      headingId="coaches-title"
+      translationMissing={translationMissing}
+      needsProofreading={needsProofreading}
+    >
+      {data.intro && <p class="lead">{data.intro}</p>}
+    </SectionHeader>
+
+    <ul class="coaches__grid">
+      {
+        coaches.map((c) => (
+          <li>
+            <PersonCard name={c.name} photo={assetImage('coaches', c.photo)} meta={localize(c.role, lang)} size="small" headingLevel={level + 1} />
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="academic">
+      <Heading level={level + 1} class="eyebrow">{t('coaches.academicPartners')}</Heading>
+      <ul class="academic__logos">
+        {
+          academicPartners.map((name) => (
+            <li>
+              <Placeholder media label={`${name} ${t('coaches.logo')}`} ratio="3 / 1" />
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .coaches__grid {
+    display: grid;
+    /* Horizontal cards: 3 → 2 → 1 columns keep names like "Prof. Markus Bambach" on one line */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2.5rem clamp(1.25rem, 3vw, 2rem);
+    list-style: none;
+  }
+  .academic {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    align-items: center;
+    gap: 1rem clamp(2rem, 6vw, 6rem);
+    margin-top: clamp(3rem, 6vw, 4.5rem);
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .academic__logos {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 16rem));
+    gap: 1.25rem;
+    list-style: none;
+  }
+  @media (max-width: 1200px) {
+    .coaches__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 760px) {
+    .academic {
+      grid-template-columns: 1fr;
+    }
+    .academic__logos {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 760px) {
+    .coaches__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

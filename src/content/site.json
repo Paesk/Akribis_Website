@@ -1,0 +1,43 @@
+{
+  "_help": "Central contact & social settings. Set \"placeholder\": false once an item is confirmed/live. Socials with an empty url are hidden automatically; `enabled: false` hides one explicitly.",
+  "email": {
+    "address": "akribis@ethz.ch",
+    "placeholder": true
+  },
+  "sponsoring": {
+    "name": "Joel Brozek",
+    "email": "jbrozek@student.ethz.ch"
+  },
+  "address": {
+    "lines": [
+      "ETH Zürich – am|z",
+      "Focus Project Akribis",
+      "Technoparkstrasse 1",
+      "8005 Zürich, Switzerland"
+    ],
+    "placeholder": true
+  },
+  "socials": [
+    {
+      "network": "Instagram",
+      "handle": "@akribis.ethz",
+      "url": "https://www.instagram.com/akribis.ethz/",
+      "enabled": true,
+      "placeholder": true
+    },
+    {
+      "network": "LinkedIn",
+      "handle": "Akribis ETH Zurich",
+      "url": "https://www.linkedin.com/company/akribis-eth-zurich",
+      "enabled": true,
+      "placeholder": true
+    },
+    {
+      "network": "YouTube",
+      "handle": "",
+      "url": "",
+      "enabled": false,
+      "placeholder": true
+    }
+  ]
+}

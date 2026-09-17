@@ -1,0 +1,17 @@
+---
+/**
+ * Heading with a computed level (h1–h6), so sub-headings follow the level of their section
+ * (a section used as page content starts at h1, its card titles become h2, …).
+ * Rendered through a component so the parent's scoped styles still apply.
+ */
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'h2'> {
+  level: number;
+}
+
+const { level, ...attrs } = Astro.props;
+const Tag = `h${Math.min(Math.max(Math.round(level), 1), 6)}` as 'h2';
+---
+
+<Tag {...attrs}><slot /></Tag>

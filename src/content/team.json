@@ -1,0 +1,83 @@
+[
+  {
+    "id": "yannic-ledergerber",
+    "name": "Yannic Ledergerber",
+    "subteam": "controls",
+    "role": { "en": "Team Lead", "de": "Teamleitung" },
+    "study": { "en": "Mechanical Engineering, ETH Zurich", "de": "Maschinen\u00ADingenieur\u00ADwissenschaften, ETH Zürich" },
+    "photo": "",
+    "linkedin": ""
+  },
+  {
+    "id": "gabriele-dutli",
+    "name": "Gabriele Dutli",
+    "subteam": "controls",
+    "role": { "en": "Social Media", "de": "Social Media" },
+    "study": { "en": "Mechanical Engineering, ETH Zurich", "de": "Maschinen\u00ADingenieur\u00ADwissenschaften, ETH Zürich" },
+    "photo": "",
+    "linkedin": ""
+  },
+  {
+    "id": "chengwei-jiang",
+    "name": "Chengwei Jiang",
+    "subteam": "controls",
+    "role": { "en": "Systems Engineering", "de": "Systems Engineering" },
+    "study": { "en": "Mechanical Engineering, ETH Zurich", "de": "Maschinen\u00ADingenieur\u00ADwissenschaften, ETH Zürich" },
+    "photo": "",
+    "linkedin": ""
+  },
+  {
+    "id": "lukas-gerster",
+    "name": "Lukas Gerster",
+    "subteam": "electronics",
+    "role": { "en": "Photography", "de": "Fotografie" },
+    "study": { "en": "Mechanical Engineering, ETH Zurich", "de": "Maschinen\u00ADingenieur\u00ADwissenschaften, ETH Zürich" },
+    "photo": "",
+    "linkedin": ""
+  },
+  {
+    "id": "pascal-marxer",
+    "name": "Pascal Marxer",
+    "subteam": "electronics",
+    "role": { "en": "Graphics", "de": "Grafik" },
+    "study": { "en": "Mechanical Engineering, ETH Zurich", "de": "Maschinen\u00ADingenieur\u00ADwissenschaften, ETH Zürich" },
+    "photo": "",
+    "linkedin": ""
+  },
+  {
+    "id": "jirko-rathmayr",
+    "name": "Jirko Rathmayr",
+    "subteam": "electronics",
+    "role": { "en": "Safety", "de": "Sicherheit" },
+    "study": { "en": "Mechanical Engineering, ETH Zurich", "de": "Maschinen\u00ADingenieur\u00ADwissenschaften, ETH Zürich" },
+    "photo": "",
+    "linkedin": ""
+  },
+  {
+    "id": "joel-brozek",
+    "name": "Joel Brozek",
+    "subteam": "mechanics",
+    "role": { "en": "Sponsoring", "de": "Sponsoring" },
+    "study": { "en": "Mechanical Engineering, ETH Zurich", "de": "Maschinen\u00ADingenieur\u00ADwissenschaften, ETH Zürich" },
+    "photo": "",
+    "linkedin": ""
+  },
+  {
+    "id": "emerson-breitenmoser",
+    "name": "Emerson Breitenmoser",
+    "subteam": "mechanics",
+    "role": { "en": "Technical Support", "de": "Technischer Support" },
+    "study": { "en": "Mechanical Engineering, ETH Zurich", "de": "Maschinen\u00ADingenieur\u00ADwissenschaften, ETH Zürich" },
+    "photo": "",
+    "linkedin": ""
+  },
+  {
+    "id": "jonatan-seiler",
+    "name": "Jonatan Seiler",
+    "subteam": "mechanics",
+    "role": { "en": "Finance", "de": "Finanzen" },
+    "study": { "en": "Mechanical Engineering, ETH Zurich", "de": "Maschinen\u00ADingenieur\u00ADwissenschaften, ETH Zürich" },
+    "photo": "",
+    "linkedin": ""
+  }
+]

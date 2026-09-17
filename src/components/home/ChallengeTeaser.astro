@@ -1,0 +1,69 @@
+---
+/** Home: short challenge teaser (full text on the Project page). */
+import SectionHeader from '../SectionHeader.astro';
+import { getSection } from '../../lib/content';
+import { useTranslations, type Lang } from '../../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  index?: string;
+}
+
+const { lang, index } = Astro.props;
+const t = useTranslations(lang);
+const { data, translationMissing, needsProofreading } = await getSection(lang, 'home');
+const { challenge } = data;
+---
+
+<section class="section home-challenge" aria-labelledby="home-challenge-title">
+  <div class="container home-challenge__grid" lang={translationMissing ? 'en' : undefined}>
+    <SectionHeader
+      index={index}
+      kicker={t('sections.challenge')}
+      title={challenge.title}
+      headingId="home-challenge-title"
+      translationMissing={translationMissing}
+      needsProofreading={needsProofreading}
+    />
+    <div class="home-challenge__body">
+      <p class="home-challenge__text">{challenge.text}</p>
+      {challenge.statement && <p class="home-challenge__statement">{challenge.statement}</p>}
+    </div>
+  </div>
+</section>
+
+<style>
+  .home-challenge__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 1rem clamp(2rem, 6vw, 6rem);
+  }
+  .home-challenge__grid :global(.section-header) {
+    margin-bottom: 0;
+  }
+  .home-challenge__body {
+    display: grid;
+    gap: 1.75rem;
+    align-content: start;
+  }
+  .home-challenge__text {
+    font-size: var(--step-1);
+    line-height: 1.6;
+  }
+  .home-challenge__statement {
+    padding-left: 1.25rem;
+    border-left: 3px solid var(--color-accent);
+    font-family: var(--font-heading);
+    font-size: var(--step-2);
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  @media (max-width: 860px) {
+    .home-challenge__grid {
+      grid-template-columns: 1fr;
+    }
+    .home-challenge__grid :global(.section-header) {
+      margin-bottom: 1rem;
+    }
+  }
+</style>

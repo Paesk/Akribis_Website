@@ -1,0 +1,82 @@
+---
+/** Home: project teaser with the macro → micro diagram and a link to the Project page. */
+import SectionHeader from '../SectionHeader.astro';
+import Diagram from '../Diagram.astro';
+import ArrowLink from '../ArrowLink.astro';
+import { getSection } from '../../lib/content';
+import { routeFor, useTranslations, type Lang } from '../../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  index?: string;
+}
+
+const { lang, index } = Astro.props;
+const t = useTranslations(lang);
+const home = await getSection(lang, 'home');
+const project = await getSection(lang, 'project');
+const { goal } = project.data;
+---
+
+<section class="section home-project" aria-labelledby="home-project-title">
+  <div class="container" lang={home.translationMissing ? 'en' : undefined}>
+    <SectionHeader
+      index={index}
+      kicker={t('sections.project')}
+      title={home.data.project.title}
+      headingId="home-project-title"
+      translationMissing={home.translationMissing}
+      needsProofreading={home.needsProofreading}
+    />
+
+    <div class="home-project__intro">
+      <p class="lead">{home.data.project.text}</p>
+      <p class="home-project__goal">
+        <span class="eyebrow">{goal.title}</span>
+        <span class="home-project__goal-text">{goal.text}</span>
+      </p>
+    </div>
+
+    <Diagram blocks={project.data.diagram} compact />
+
+    <p class="home-project__more">
+      <ArrowLink href={routeFor('project', lang)}>
+        {t('home.learnMore')}
+        <span class="visually-hidden">– {t('pages.project.title')}</span>
+      </ArrowLink>
+    </p>
+  </div>
+</section>
+
+<style>
+  .home-project__intro {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 1.5rem clamp(2rem, 6vw, 6rem);
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+  .home-project__intro .lead {
+    max-width: 48ch;
+  }
+  .home-project__goal {
+    display: grid;
+    align-content: start;
+    gap: 0.6rem;
+    padding-left: 1.25rem;
+    border-left: 3px solid var(--color-accent);
+  }
+  .home-project__goal-text {
+    font-family: var(--font-heading);
+    font-size: var(--step-2);
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .home-project__more {
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+  @media (max-width: 860px) {
+    .home-project__intro {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

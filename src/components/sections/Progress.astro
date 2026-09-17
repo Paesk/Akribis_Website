@@ -1,0 +1,563 @@
+---
+import Heading from '../Heading.astro';
+/**
+ * Progress stepper – driven purely by src/content/{lang}/stages/*.md.
+ * Changing `status` in the English stage file is all that is needed to move the bar.
+ */
+import { Picture, getImage } from 'astro:assets';
+import { render } from 'astro:content';
+import SectionHeader from '../SectionHeader.astro';
+import Placeholder from '../Placeholder.astro';
+import Marker from '../Marker.astro';
+import PostList from '../PostList.astro';
+import Icon from '../Icon.astro';
+import { getSection, getStages, summarizeProgress } from '../../lib/content';
+import { getPosts } from '../../lib/posts';
+import { useTranslations, withBase, type Lang } from '../../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  /** 1 when this section is the main content of its page */
+  level?: 1 | 2;
+  /** Optional section number, e.g. "01" */
+  index?: string;
+}
+
+const { lang, level = 2, index } = Astro.props;
+const t = useTranslations(lang);
+const { data, translationMissing, needsProofreading } = await getSection(lang, 'progress');
+const stages = await getStages(lang);
+const { total, currentIndex, fill } = summarizeProgress(stages);
+const posts = await getPosts(lang);
+
+const panels = await Promise.all(
+  stages.map(async (stage) => {
+    const { Content } = await render(stage.bodyEntry);
+    const gallery = await Promise.all(
+      stage.gallery.map(async (img) => ({
+        ...img,
+        full: await getImage({ src: img.src, width: 1600, format: 'webp' }),
+      })),
+    );
+    return { stage, Content, gallery, stagePosts: posts.filter((p) => p.stage === stage.slug) };
+  }),
+);
+
+const pad = (n: number) => String(n).padStart(2, '0');
+const videoSrc = (src: string) => (/^https?:/.test(src) ? src : withBase(src));
+---
+
+<section id="progress" class="section progress" aria-labelledby="progress-title">
+  <div class="container">
+    <SectionHeader
+      index={index}
+      level={level}
+      kicker={t('sections.progress')}
+      title={data.title}
+      headingId="progress-title"
+      translationMissing={translationMissing}
+      needsProofreading={needsProofreading}
+    >
+      {data.intro && <p class="lead">{data.intro}</p>}
+    </SectionHeader>
+
+    <div class="progress__widget" data-progress>
+      <div class="progress__meta">
+        <p class="progress__count mono">
+          {t('progress.stageOf', { current: currentIndex + 1, total })}
+        </p>
+        <ul class="progress__legend" aria-hidden="true">
+          {
+            (['done', 'active', 'upcoming'] as const).map((s) => (
+              <li>
+                <span class:list={['node', `node--${s}`, 'node--mini']} />
+                {t(`progress.status.${s}`)}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <div class="stepper" style={`--fill: ${fill}%; --count: ${total}`}>
+        <div class="stepper__track" aria-hidden="true">
+          <div class="stepper__fill"></div>
+        </div>
+
+        <div class="stepper__list" role="tablist" aria-label={t('progress.stagesLabel')} data-tablist>
+          {
+            stages.map((stage, i) => (
+              <button
+                type="button"
+                role="tab"
+                class:list={['stepper__item', `is-${stage.status}`]}
+                id={`stage-tab-${stage.slug}`}
+                aria-controls={`stage-panel-${stage.slug}`}
+                aria-selected={i === currentIndex ? 'true' : 'false'}
+                tabindex={i === currentIndex ? 0 : -1}
+                data-tab
+              >
+                <span class:list={['node', `node--${stage.status}`]} aria-hidden="true">
+                  {stage.status === 'done' && (
+                    <Icon name="check" size="1.1rem" />
+                  )}
+                </span>
+                <span class="stepper__num mono">{pad(stage.order)}</span>
+                <span class="stepper__title">{stage.title}</span>
+                <span class="visually-hidden">– {t(`progress.status.${stage.status}`)}</span>
+              </button>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="stage-panels">
+        {
+          panels.map(({ stage, Content, gallery, stagePosts }, i) => (
+            <div
+              class:list={['stage-panel', { 'is-selected': i === currentIndex }]}
+              role="tabpanel"
+              id={`stage-panel-${stage.slug}`}
+              aria-labelledby={`stage-tab-${stage.slug}`}
+              tabindex="0"
+              data-panel
+            >
+              <header class="stage-panel__head">
+                <p class="stage-panel__meta eyebrow">
+                  <span>{t('progress.stageOf', { current: stage.order, total })}</span>
+                  <span class:list={['status-pill', `status-pill--${stage.status}`]}>
+                    {t(`progress.status.${stage.status}`)}
+                  </span>
+                  {stage.date && <span class="stage-panel__date">{stage.date}</span>}
+                  <Marker translationMissing={stage.translationMissing} needsProofreading={stage.needsProofreading} />
+                </p>
+                <Heading level={level + 1} class="stage-panel__title">{stage.title}</Heading>
+              </header>
+
+              <div class="stage-panel__grid">
+                <div class="stage-panel__text" lang={stage.translationMissing ? 'en' : undefined}>
+                  {stage.hasText ? (
+                    <div class="prose">
+                      <Content />
+                    </div>
+                  ) : (
+                    <Placeholder label={t('progress.textPlaceholder')} class="stage-panel__ph-text" />
+                  )}
+
+                  {stage.learned ? (
+                    <div class="learned">
+                      <Heading level={level + 2} class="eyebrow">{t('progress.learned')}</Heading>
+                      <p>{stage.learned}</p>
+                    </div>
+                  ) : (
+                    stage.status === 'done' && (
+                      <div class="learned">
+                        <Heading level={level + 2} class="eyebrow">{t('progress.learned')}</Heading>
+                        <Placeholder label={t('progress.learnedPlaceholder')} />
+                      </div>
+                    )
+                  )}
+
+                </div>
+
+                <div class="stage-panel__media">
+                  {stage.cover && (
+                    <Picture
+                      class="stage-panel__cover"
+                      src={stage.cover}
+                      formats={['avif', 'webp']}
+                      widths={[480, 800, 1200]}
+                      sizes="(max-width: 900px) 100vw, 45vw"
+                      alt={stage.coverAlt}
+                      loading="lazy"
+                    />
+                  )}
+
+                  {stage.video && (
+                    <figure class="stage-panel__video">
+                      <video controls preload="none" playsinline>
+                        <source src={videoSrc(stage.video)} />
+                      </video>
+                      <figcaption class="visually-hidden">
+                        {t('progress.video')}: {stage.title}
+                      </figcaption>
+                    </figure>
+                  )}
+
+                  {gallery.length > 0 ? (
+                    <ul class="gallery" aria-label={`${t('progress.gallery')}: ${stage.title}`}>
+                      {gallery.map((img) => (
+                        <li>
+                          <a href={img.full.src} class="gallery__link">
+                            <Picture
+                              src={img.src}
+                              formats={['avif', 'webp']}
+                              widths={[240, 480]}
+                              sizes="(max-width: 900px) 50vw, 20vw"
+                              alt={img.alt}
+                              loading="lazy"
+                            />
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    !stage.cover &&
+                    !stage.video &&
+                    stage.status !== 'upcoming' && (
+                      <Placeholder media label={t('progress.galleryPlaceholder')} ratio="16 / 10" />
+                    )
+                  )}
+                </div>
+              </div>
+
+              {stagePosts.length > 0 && (
+                <div class="stage-posts">
+                  <Heading level={level + 2} class="eyebrow">
+                    {t('posts.stageTitle')}
+                  </Heading>
+                  <PostList posts={stagePosts} lang={lang} />
+                </div>
+              )}
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-progress]').forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+    const panels = [...root.querySelectorAll<HTMLElement>('[data-panel]')];
+
+    const select = (index: number, focus = false) => {
+      tabs.forEach((tab, i) => {
+        const selected = i === index;
+        tab.setAttribute('aria-selected', String(selected));
+        tab.tabIndex = selected ? 0 : -1;
+        panels[i].hidden = !selected;
+        panels[i].classList.toggle('is-selected', selected);
+      });
+      if (focus) tabs[index].focus();
+    };
+
+    const initial = Math.max(
+      tabs.findIndex((t) => t.getAttribute('aria-selected') === 'true'),
+      0,
+    );
+    root.classList.add('is-enhanced');
+    select(initial);
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(i));
+      tab.addEventListener('keydown', (e) => {
+        const last = tabs.length - 1;
+        const next: Record<string, number> = {
+          ArrowRight: i === last ? 0 : i + 1,
+          ArrowDown: i === last ? 0 : i + 1,
+          ArrowLeft: i === 0 ? last : i - 1,
+          ArrowUp: i === 0 ? last : i - 1,
+          Home: 0,
+          End: last,
+        };
+        if (e.key in next) {
+          e.preventDefault();
+          select(next[e.key], true);
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .progress__widget {
+    display: grid;
+    gap: 2rem;
+  }
+  .progress__meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+  .progress__count {
+    font-size: var(--step-1);
+    font-weight: 600;
+  }
+  .progress__legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    list-style: none;
+    font-size: 0.875rem;
+    color: var(--color-muted);
+  }
+  .progress__legend li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* ---------- Nodes ---------- */
+  .node {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 50%;
+    border: 2px solid var(--color-line);
+    background: var(--color-bg);
+    color: var(--color-on-accent);
+    transition:
+      transform 0.25s var(--ease),
+      box-shadow 0.25s var(--ease);
+  }
+  .node--mini {
+    width: 0.9rem;
+    height: 0.9rem;
+    border-width: 1.5px;
+  }
+  .node--done {
+    border-color: var(--color-accent);
+    background: var(--color-accent);
+  }
+  .node--active {
+    border-color: var(--color-accent);
+    background: linear-gradient(90deg, var(--color-accent) 50%, var(--color-bg) 50%);
+  }
+  .node--active:not(.node--mini)::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 50%;
+    border: 2px solid var(--color-accent);
+    animation: pulse 2.4s var(--ease) infinite;
+  }
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      opacity: 0.7;
+    }
+    70%,
+    100% {
+      transform: scale(1.7);
+      opacity: 0;
+    }
+  }
+
+  /* ---------- Stepper (horizontal) ---------- */
+  .stepper {
+    position: relative;
+  }
+  .stepper__track {
+    position: absolute;
+    top: calc(1.125rem - 1px);
+    left: calc(100% / var(--count) / 2);
+    right: calc(100% / var(--count) / 2);
+    height: 2px;
+    background: var(--color-border);
+  }
+  .stepper__fill {
+    width: var(--fill);
+    height: 100%;
+    background: var(--color-accent);
+  }
+  .stepper__list {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(var(--count), minmax(0, 1fr));
+  }
+  .stepper__item {
+    display: grid;
+    justify-items: center;
+    align-content: start;
+    gap: 0.35rem;
+    padding: 0 0.25rem 0.75rem;
+    border: 0;
+    background: none;
+    text-align: center;
+    cursor: pointer;
+    color: var(--color-muted);
+  }
+  .stepper__item .node {
+    margin-bottom: 0.6rem;
+  }
+  .stepper__num {
+    font-size: 0.75rem;
+  }
+  .stepper__title {
+    font-family: var(--font-heading);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+  .stepper__item.is-done,
+  .stepper__item.is-active {
+    color: var(--color-text);
+  }
+  .stepper__item:hover .node {
+    transform: scale(1.08);
+  }
+  .stepper__item[aria-selected='true'] .node {
+    box-shadow:
+      0 0 0 4px var(--color-bg),
+      0 0 0 5.5px var(--color-text);
+  }
+  .stepper__item[aria-selected='true'] .stepper__title {
+    color: var(--color-text);
+    font-weight: 650;
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.35em;
+  }
+
+  /* ---------- Panels ---------- */
+  .is-enhanced .stage-panel:not(.is-selected) {
+    display: none;
+  }
+  .stage-panels {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .stage-panel {
+    padding: clamp(1.5rem, 4vw, 2.75rem);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+  }
+  .stage-panel:focus-visible {
+    outline-offset: -2px;
+  }
+  .stage-panel__head {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 1.75rem;
+  }
+  .stage-panel__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+  }
+  .stage-panel__title {
+    font-size: var(--step-3);
+  }
+  .status-pill {
+    padding: 0.05rem 0.55rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    font-size: 0.6875rem;
+  }
+  .status-pill--done {
+    border-color: var(--color-accent);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+  .status-pill--active {
+    border-color: var(--color-accent);
+    color: var(--color-accent-text);
+  }
+  .stage-panel__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 2rem clamp(2rem, 5vw, 4rem);
+  }
+  .stage-panel__text {
+    display: grid;
+    align-content: start;
+    gap: 1.75rem;
+    font-size: var(--step-1);
+    line-height: 1.55;
+  }
+  .stage-panel__text :global(.stage-panel__ph-text) {
+    min-height: 8rem;
+  }
+  .learned {
+    display: grid;
+    gap: 0.6rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-border);
+    font-size: var(--step-0);
+  }
+  .stage-posts {
+    display: grid;
+    gap: 1rem;
+    margin-top: clamp(1.75rem, 4vw, 2.5rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .stage-panel__media {
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+  }
+  .stage-panel__media :global(img),
+  .stage-panel__video video {
+    width: 100%;
+    border-radius: var(--radius);
+  }
+  .stage-panel__video {
+    margin: 0;
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+    gap: 0.5rem;
+    list-style: none;
+  }
+  .gallery__link {
+    display: block;
+    overflow: hidden;
+    border-radius: var(--radius);
+  }
+  .gallery__link :global(img) {
+    aspect-ratio: 1;
+    object-fit: cover;
+    transition: transform 0.3s var(--ease);
+  }
+  .gallery__link:hover :global(img) {
+    transform: scale(1.04);
+  }
+
+  /* ---------- Vertical stepper on small screens ---------- */
+  @media (max-width: 760px) {
+    .stepper__track {
+      top: calc(0.3rem + 1.125rem);
+      bottom: calc(0.3rem + 1.125rem);
+      left: calc(1.125rem - 1px);
+      right: auto;
+      width: 2px;
+      height: auto;
+    }
+    .stepper__fill {
+      width: 100%;
+      height: var(--fill);
+    }
+    .stepper__list {
+      grid-template-columns: 1fr;
+      gap: 0.35rem;
+    }
+    .stepper__item {
+      grid-template-columns: auto auto 1fr;
+      justify-items: start;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0.3rem 0;
+      text-align: left;
+    }
+    .stepper__item .node {
+      margin-bottom: 0;
+    }
+    .stepper__title {
+      font-size: 1rem;
+    }
+    .stage-panel__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

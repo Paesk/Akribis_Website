@@ -1,0 +1,110 @@
+---
+/** Home: partner call to action – reuses the Partners page content (partners.md). */
+import ArrowLink from '../ArrowLink.astro';
+import Icon from '../Icon.astro';
+import Marker from '../Marker.astro';
+import { getSection } from '../../lib/content';
+import { site } from '../../lib/site';
+import { routeFor, useTranslations, type Lang } from '../../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const { data, translationMissing, needsProofreading } = await getSection(lang, 'partners');
+const { email } = site.sponsoring;
+---
+
+<section class="section home-cta" aria-labelledby="home-cta-title">
+  <div class="container">
+    <div class="home-cta__box panel-graphite" lang={translationMissing ? 'en' : undefined}>
+      <div class="home-cta__text">
+        <p class="eyebrow home-cta__kicker">
+          <span class="home-cta__rule" aria-hidden="true"></span>
+          {t('sections.partners')}
+          <Marker translationMissing={translationMissing} needsProofreading={needsProofreading} />
+        </p>
+        <h2 id="home-cta-title">{data.cta.title}</h2>
+        <ul class="home-cta__points">
+          {data.why.points.map((point) => <li>{point.title}</li>)}
+        </ul>
+        <p class="home-cta__more">
+          <ArrowLink href={routeFor('partners', lang)}>{t('home.partnersLink')}</ArrowLink>
+        </p>
+      </div>
+      <div class="home-cta__actions">
+        <a class="btn btn--primary" href={`mailto:${email}`}>
+          {data.cta.button}
+          <Icon name="arrow-right" size="1.1em" />
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .home-cta__box {
+    display: grid;
+    grid-template-columns: minmax(0, 8fr) minmax(0, 4fr);
+    align-items: end;
+    gap: 2rem clamp(2rem, 5vw, 5rem);
+    padding: clamp(1.75rem, 5vw, 3.5rem);
+  }
+  .home-cta__text {
+    display: grid;
+    gap: 1rem;
+  }
+  .home-cta__kicker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .home-cta__rule {
+    width: 2.5rem;
+    height: 1.5px;
+    background: var(--color-accent);
+  }
+  h2 {
+    font-size: var(--step-3);
+  }
+  .home-cta__points {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.75rem;
+    list-style: none;
+    font-size: var(--step-1);
+    color: var(--color-muted);
+  }
+  .home-cta__points li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+  .home-cta__points li::before {
+    content: '';
+    flex-shrink: 0;
+    width: 0.8rem;
+    height: 2px;
+    background: var(--color-accent);
+    transform: translateY(-0.3em);
+  }
+  /* Link to the Partners page belongs to the three points above it */
+  .home-cta__more {
+    margin-top: 0.25rem;
+  }
+  .home-cta__actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+  @media (max-width: 860px) {
+    .home-cta__box {
+      grid-template-columns: 1fr;
+    }
+    .home-cta__actions {
+      justify-content: flex-start;
+    }
+  }
+</style>

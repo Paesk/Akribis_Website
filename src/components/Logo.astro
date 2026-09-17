@@ -1,0 +1,36 @@
+---
+/**
+ * Brand logo, inlined from the outlined SVGs in src/assets/brand (copied from /brand).
+ * The dark grey (#4A4A4A) is mapped to --logo-grey so the logo stays visible on dark
+ * backgrounds; the orange is left untouched.
+ */
+import primary from '../assets/brand/Technical_Orange_Primary.svg?raw';
+import stacked from '../assets/brand/Technical_Orange_Stacked.svg?raw';
+import icon from '../assets/brand/Technical_Orange_Icon.svg?raw';
+import wordmark from '../assets/brand/Technical_Orange_Text.svg?raw';
+
+interface Props {
+  variant?: 'primary' | 'stacked' | 'icon' | 'text';
+  /** Accessible name; pass an empty string when the logo is decorative */
+  label?: string;
+  class?: string;
+}
+
+const { variant = 'primary', label = 'Akribis', class: className } = Astro.props;
+const sources = { primary, stacked, icon, text: wordmark };
+
+const a11y = label ? `role="img" aria-label="${label}"` : 'aria-hidden="true"';
+
+const svg = sources[variant]
+  .replace(/<\?xml[^>]*\?>/, '')
+  .replace(/<!--[\s\S]*?-->/g, '')
+  .replace(/\s(?:id|aria-label)="[^"]*"/g, '')
+  .replace(/#4a4a4a/gi, 'var(--logo-grey)')
+  // Keep the file's own width/height attributes: CSS sizes the logo, the attributes stop it from ever stretching
+  .replace(/<svg([^>]*)>/, (_match, attrs: string) => {
+    return `<svg${attrs} ${a11y} focusable="false" class="logo logo--${variant}${className ? ` ${className}` : ''}">`;
+  })
+  .trim();
+---
+
+<Fragment set:html={svg} />

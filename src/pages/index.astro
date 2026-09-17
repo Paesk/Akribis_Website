@@ -1,0 +1,29 @@
+---
+/**
+ * `/` → `/en/` (English is the default language).
+ * Plain HTML redirect so it works on any static host without server rules.
+ */
+import { routeFor, withBase } from '../i18n/utils';
+
+const target = routeFor('home', 'en');
+const canonical = new URL(target, Astro.site).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Akribis</title>
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <link rel="canonical" href={canonical} />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <script is:inline define:vars={{ target }}>
+      location.replace(target + location.hash);
+    </script>
+  </head>
+  <body>
+    <p><a href={target}>Akribis – continue to the website</a></p>
+  </body>
+</html>

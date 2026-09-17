@@ -1,0 +1,43 @@
+---
+/** Small "Translation TBD" / "Proofreading TBD" marker for German content. */
+import Icon from './Icon.astro';
+import { useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  translationMissing?: boolean;
+  needsProofreading?: boolean;
+}
+
+const { translationMissing = false, needsProofreading = false } = Astro.props;
+const t = useTranslations((Astro.currentLocale ?? 'en') as Lang);
+---
+
+{
+  (translationMissing || needsProofreading) && (
+    <span class="marker" lang="en">
+      <Icon name="warning" size="0.85rem" />
+      {translationMissing ? t('markers.translationTbd') : t('markers.proofreadingTbd')}
+    </span>
+  )
+}
+
+<style>
+  .marker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.1rem 0.5rem;
+    border: 1px dashed var(--color-line);
+    border-radius: 2px;
+    background: var(--color-surface-2);
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.6;
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+</style>

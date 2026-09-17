@@ -1,0 +1,26 @@
+---
+/** Home: the 3 newest social media posts (placeholders while src/content/posts.json is empty). */
+import SectionHeader from '../SectionHeader.astro';
+import PostList from '../PostList.astro';
+import { getPosts } from '../../lib/posts';
+import { useTranslations, type Lang } from '../../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const posts = (await getPosts(lang)).slice(0, 3);
+---
+
+{
+  posts.length > 0 && (
+    <section class="section home-posts" aria-labelledby="home-posts-title">
+      <div class="container">
+        <SectionHeader kicker={t('posts.title')} headingId="home-posts-title" />
+        <PostList posts={posts} lang={lang} />
+      </div>
+    </section>
+  )
+}

@@ -1,0 +1,51 @@
+---
+/** Simple monochrome platform icons, drawn inline – no external icon font or images. */
+import type { Platform } from '../lib/posts';
+
+interface Props {
+  platform: Platform;
+  /** Rendered size, used for the width/height attributes (default 1em) */
+  size?: string;
+  class?: string;
+}
+
+const { platform, size = '1em', class: className } = Astro.props;
+---
+
+<svg
+  class:list={['platform-icon', className]}
+  width={size}
+  height={size}
+  viewBox="0 0 24 24"
+  aria-hidden="true"
+  focusable="false"
+  style={`--icon-size:${size}`}
+>
+  {
+    platform === 'instagram' && (
+      <>
+        <rect x="3.5" y="3.5" width="17" height="17" rx="5" fill="none" stroke="currentColor" stroke-width="1.8" />
+        <circle cx="12" cy="12" r="3.9" fill="none" stroke="currentColor" stroke-width="1.8" />
+        <circle cx="16.9" cy="7.1" r="1.15" fill="currentColor" />
+      </>
+    )
+  }
+  {
+    platform === 'linkedin' && (
+      <>
+        <rect x="3.5" y="3.5" width="17" height="17" rx="3" fill="none" stroke="currentColor" stroke-width="1.8" />
+        <circle cx="8.4" cy="8.3" r="1.2" fill="currentColor" />
+        <path d="M8.4 10.8v5.8M11.7 16.6v-5.8m0 2.6c0-1.6 1-2.7 2.4-2.7s2.3 1 2.3 2.7v3.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </>
+    )
+  }
+  {
+    platform === 'youtube' && (
+      <>
+        <rect x="2.5" y="5.5" width="19" height="13" rx="4" fill="none" stroke="currentColor" stroke-width="1.8" />
+        <path d="M10.2 9.3v5.4l4.6-2.7z" fill="currentColor" />
+      </>
+    )
+  }
+</svg>
+

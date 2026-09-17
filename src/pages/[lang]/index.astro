@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/sections/Hero.astro';
+import ChallengeTeaser from '../../components/home/ChallengeTeaser.astro';
+import ProjectTeaser from '../../components/home/ProjectTeaser.astro';
+import ProgressIndicator from '../../components/home/ProgressIndicator.astro';
+import LatestPosts from '../../components/home/LatestPosts.astro';
+import PartnerCta from '../../components/home/PartnerCta.astro';
+import { langPaths, type Lang } from '../../i18n/utils';
+
+export function getStaticPaths() {
+  return langPaths();
+}
+
+const lang = Astro.params.lang as Lang;
+---
+
+<BaseLayout lang={lang} route="home">
+  <Hero lang={lang} />
+  <ChallengeTeaser lang={lang} />
+  <ProjectTeaser lang={lang} />
+  <ProgressIndicator lang={lang} />
+  <LatestPosts lang={lang} />
+  <PartnerCta lang={lang} />
+</BaseLayout>

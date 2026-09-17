@@ -1,0 +1,55 @@
+---
+import Icon from './Icon.astro';
+
+interface Props {
+  href: string;
+  class?: string;
+}
+const { href, class: className } = Astro.props;
+
+// Keep the arrow on the same line as the last word when the label wraps:
+// plain-text labels get "last word + arrow" in a no-wrap span; labels with markup keep the arrow at the end.
+const label = (await Astro.slots.render('default')).trim();
+const plain = !/[<>]/.test(label);
+const splitAt = plain ? label.lastIndexOf(' ') + 1 : label.length;
+const head = label.slice(0, splitAt);
+const tail = label.slice(splitAt);
+---
+
+<a class:list={['arrow-link', className]} href={href}>
+  <Fragment set:html={head} /><span class="arrow-link__tail"><Fragment set:html={tail} /><Icon
+      name="arrow-right"
+      size="1.1em"
+      class="arrow-link__icon"
+    /></span>
+</a>
+
+<style>
+  /* Inline (not flex) so a wrapping label flows like normal text */
+  .arrow-link {
+    display: inline;
+    line-height: 1.9;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    color: var(--color-text);
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.35em;
+  }
+  .arrow-link:hover {
+    color: var(--color-accent-text);
+  }
+  .arrow-link__tail {
+    white-space: nowrap;
+  }
+  .arrow-link :global(.arrow-link__icon) {
+    vertical-align: -0.2em;
+    margin-left: 0.45rem;
+    color: var(--color-accent-text);
+    transition: transform 0.2s var(--ease);
+  }
+  .arrow-link:hover :global(.arrow-link__icon) {
+    transform: translateX(3px);
+  }
+</style>

@@ -1,0 +1,73 @@
+---
+import Marker from './Marker.astro';
+
+interface Props {
+  /** Optional number shown before the kicker, e.g. "01" */
+  index?: string;
+  kicker: string;
+  /** Falls back to the kicker when the content file has no title */
+  title?: string;
+  headingId: string;
+  /** 1 when the section is the main content of its page (page title), otherwise 2 */
+  level?: 1 | 2;
+  translationMissing?: boolean;
+  needsProofreading?: boolean;
+}
+
+const { index, kicker, title, headingId, level = 2, translationMissing, needsProofreading } = Astro.props;
+// A page title (h1) needs no kicker – the highlighted nav item already names the page.
+const showKicker = level === 2 && !!title && title !== kicker;
+const hasMarker = !!(translationMissing || needsProofreading);
+const Heading = level === 1 ? 'h1' : 'h2';
+---
+
+<header class:list={['section-header', `section-header--h${level}`]}>
+  {
+    (showKicker || index || hasMarker) && (
+      <p class="section-header__kicker eyebrow">
+        {index && (
+          <span class="section-header__index mono" aria-hidden="true">
+            {index}
+          </span>
+        )}
+        {(showKicker || index) && <span class="section-header__rule" aria-hidden="true" />}
+        {showKicker && <span>{kicker}</span>}
+        <Marker translationMissing={translationMissing} needsProofreading={needsProofreading} />
+      </p>
+    )
+  }
+  <Heading id={headingId} class="section-header__title">{title ?? kicker}</Heading>
+  <slot />
+</header>
+
+<style>
+  .section-header {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+    max-width: 52rem;
+  }
+  .section-header__kicker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .section-header__index {
+    color: var(--color-accent-text);
+  }
+  .section-header__rule {
+    width: 2.5rem;
+    height: 1.5px;
+    background: var(--color-accent);
+  }
+  /* :global – the heading is a dynamic tag (h1/h2) and does not get the scope attribute */
+  .section-header :global(.section-header__title) {
+    font-size: var(--step-3);
+  }
+  .section-header--h1 :global(.section-header__title) {
+    font-size: clamp(2.5rem, 1.5rem + 4.2vw, 4.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+  }
+</style>

@@ -1,0 +1,100 @@
+---
+import SectionHeader from '../SectionHeader.astro';
+import Placeholder from '../Placeholder.astro';
+import PersonCard from '../PersonCard.astro';
+import { getCollection } from 'astro:content';
+import { assetImage, getSection, localize } from '../../lib/content';
+import { useTranslations, type Lang } from '../../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  /** 1 when this section is the main content of its page */
+  level?: 1 | 2;
+  /** Optional section number, e.g. "01" */
+  index?: string;
+}
+
+const { lang, level = 2, index } = Astro.props;
+const t = useTranslations(lang);
+const { data, translationMissing, needsProofreading } = await getSection(lang, 'team');
+
+// Grouped by subteam Controls → Electronics → Mechanics, then alphabetically by last name.
+// Every member is shown the same way – no one is highlighted.
+const subteamOrder = ['controls', 'electronics', 'mechanics'];
+const lastName = (name: string) => name.trim().split(/\s+/).at(-1) ?? name;
+const members = (await getCollection('team'))
+  .map((entry) => entry.data)
+  .sort(
+    (a, b) =>
+      subteamOrder.indexOf(a.subteam) - subteamOrder.indexOf(b.subteam) ||
+      lastName(a.name).localeCompare(lastName(b.name), 'de') ||
+      a.name.localeCompare(b.name, 'de'),
+  );
+---
+
+<section id="team" class="section team" aria-labelledby="team-title">
+  <div class="container">
+    <SectionHeader
+      index={index}
+      level={level}
+      kicker={t('sections.team')}
+      title={data.title}
+      headingId="team-title"
+      translationMissing={translationMissing}
+      needsProofreading={needsProofreading}
+    >
+      <p class="lead team__intro" lang={translationMissing ? 'en' : undefined}>{data.intro}</p>
+    </SectionHeader>
+
+    <Placeholder media class="team__group" label={t('team.groupPhoto')} ratio="21 / 9" />
+
+    <ul class="team__grid">
+      {
+        members.map((m) => (
+          <li>
+            <PersonCard
+              name={m.name}
+              photo={assetImage('team', m.photo)}
+              primary={`${t('team.subteam')} · ${t(`team.subteams.${m.subteam}`)}`}
+              secondary={`${t('team.softRole')} · ${localize(m.role, lang)}`}
+              meta={localize(m.study, lang)}
+              linkedin={m.linkedin}
+              headingLevel={level + 1}
+            />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .team__intro {
+    color: var(--color-muted);
+    max-width: 48ch;
+  }
+  .team :global(.team__group) {
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+  .team__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 3rem clamp(1rem, 3vw, 2rem);
+    list-style: none;
+  }
+  @media (max-width: 900px) {
+    .team__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 380px) {
+    .team__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 640px) {
+    .team :global(.team__group) {
+      aspect-ratio: 4 / 3 !important;
+    }
+  }
+</style>

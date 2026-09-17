@@ -1,0 +1,38 @@
+[
+  {
+    "id": "markus-bambach",
+    "name": "Prof. Markus Bambach",
+    "role": { "en": "Professor, Advanced Manufacturing Lab", "de": "Professor, Advanced Manufacturing Lab" },
+    "photo": ""
+  },
+  {
+    "id": "nicolas-perruchoud",
+    "name": "Nicolas Perruchoud",
+    "role": { "en": "Coach · former Focus Project AMflux", "de": "Coach · ehemaliges Fokusprojekt AMflux" },
+    "photo": ""
+  },
+  {
+    "id": "haixiao-wang",
+    "name": "Haixiao Wang",
+    "role": { "en": "Coach · former Focus Project AMflux", "de": "Coach · ehemaliges Fokusprojekt AMflux" },
+    "photo": ""
+  },
+  {
+    "id": "yiyang-yan",
+    "name": "Yiyang Yan",
+    "role": { "en": "Coach · Advanced Manufacturing Lab", "de": "Coach · Advanced Manufacturing Lab" },
+    "photo": ""
+  },
+  {
+    "id": "carmen-halbeisen",
+    "name": "Carmen Halbeisen",
+    "role": { "en": "Coach · Advanced Manufacturing Lab", "de": "Coach · Advanced Manufacturing Lab" },
+    "photo": ""
+  },
+  {
+    "id": "julia-walter",
+    "name": "Julia Walter",
+    "role": { "en": "Coach · Advanced Manufacturing Lab", "de": "Coach · Advanced Manufacturing Lab" },
+    "photo": ""
+  }
+]

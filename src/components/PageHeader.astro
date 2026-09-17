@@ -1,0 +1,54 @@
+---
+/** Title block for pages that combine several sections (h1 + optional lead). */
+import Marker from './Marker.astro';
+
+interface Props {
+  title: string;
+  lead?: string;
+  translationMissing?: boolean;
+  needsProofreading?: boolean;
+}
+
+const { title, lead, translationMissing, needsProofreading } = Astro.props;
+---
+
+<header class="page-header">
+  <div class="container page-header__inner">
+    {
+      (translationMissing || needsProofreading) && (
+        <p class="page-header__kicker">
+          <Marker translationMissing={translationMissing} needsProofreading={needsProofreading} />
+        </p>
+      )
+    }
+    <h1>{title}</h1>
+    {lead && <p class="page-header__lead">{lead}</p>}
+  </div>
+</header>
+
+<style>
+  .page-header {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(1rem, 3vw, 2rem);
+  }
+  .page-header__inner {
+    display: grid;
+    gap: 1rem;
+  }
+  .page-header__kicker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  h1 {
+    font-size: clamp(2.5rem, 1.5rem + 4.2vw, 4.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+  }
+  .page-header__lead {
+    max-width: 44ch;
+    font-size: var(--step-2);
+    line-height: 1.4;
+    color: var(--color-muted);
+  }
+</style>

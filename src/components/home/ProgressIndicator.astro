@@ -1,0 +1,160 @@
+---
+/**
+ * Home: compact progress indicator. Reads the same stage files as the Progress page
+ * (getStages + summarizeProgress), so both always show the same stage.
+ */
+import SectionHeader from '../SectionHeader.astro';
+import ArrowLink from '../ArrowLink.astro';
+import { getSection, getStages, summarizeProgress } from '../../lib/content';
+import { routeFor, useTranslations, type Lang } from '../../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  index?: string;
+}
+
+const { lang, index } = Astro.props;
+const t = useTranslations(lang);
+const home = await getSection(lang, 'home');
+const stages = await getStages(lang);
+const { total, currentIndex, current } = summarizeProgress(stages);
+const stageOf = t('progress.stageOf', { current: currentIndex + 1, total });
+---
+
+<section class="section home-progress" aria-labelledby="home-progress-title">
+  <div class="container">
+    <SectionHeader
+      index={index}
+      kicker={t('sections.progress')}
+      title={home.data.progress?.title}
+      headingId="home-progress-title"
+    />
+
+    <div class="indicator">
+      <div class="indicator__head">
+        <p class="indicator__count mono">{stageOf}</p>
+        {
+          current && (
+            <p class="indicator__current">
+              <span class="eyebrow">{t('home.currentStage')}</span>
+              <span class="indicator__title">{current.title}</span>
+              <span class:list={['indicator__pill', `indicator__pill--${current.status}`]}>
+                {t(`progress.status.${current.status}`)}
+              </span>
+            </p>
+          )
+        }
+      </div>
+
+      <ol class="mini-bar" style={`--count: ${total}`} aria-label={t('progress.stagesLabel')}>
+        {
+          stages.map((stage, i) => (
+            <li
+              class:list={['mini-bar__seg', `is-${stage.status}`, { 'is-current': i === currentIndex }]}
+              aria-current={i === currentIndex ? 'step' : undefined}
+            >
+              <span class="mini-bar__track" aria-hidden="true" />
+              <span class="mini-bar__num mono" aria-hidden="true">
+                {String(stage.order).padStart(2, '0')}
+              </span>
+              <span class="visually-hidden">
+                {stage.title} – {t(`progress.status.${stage.status}`)}
+              </span>
+            </li>
+          ))
+        }
+      </ol>
+
+      <p class="indicator__more">
+        <ArrowLink href={routeFor('progress', lang)}>{t('home.viewProgress')}</ArrowLink>
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .indicator {
+    display: grid;
+    gap: 1.75rem;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+  }
+  .indicator__head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: end;
+    gap: 1rem 2rem;
+  }
+  .indicator__count {
+    font-size: clamp(1.75rem, 1.2rem + 2vw, 2.5rem);
+    font-weight: 600;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .indicator__current {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.9rem;
+  }
+  .indicator__title {
+    font-family: var(--font-heading);
+    font-size: var(--step-1);
+    font-weight: 600;
+  }
+  .indicator__pill {
+    padding: 0.05rem 0.55rem;
+    border: 1px solid var(--color-line);
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .indicator__pill--done {
+    border-color: var(--color-accent);
+    background: var(--color-accent);
+    color: var(--color-on-accent);
+  }
+  .indicator__pill--active {
+    border-color: var(--color-accent);
+    color: var(--color-accent-text);
+  }
+
+  .mini-bar {
+    display: grid;
+    grid-template-columns: repeat(var(--count), minmax(0, 1fr));
+    gap: 0.35rem;
+    list-style: none;
+  }
+  .mini-bar__seg {
+    display: grid;
+    gap: 0.5rem;
+  }
+  .mini-bar__track {
+    display: block;
+    height: 0.6rem;
+    border: 1.5px solid var(--color-line);
+    border-radius: 2px;
+    background: transparent;
+  }
+  .is-done .mini-bar__track {
+    border-color: var(--color-accent);
+    background: var(--color-accent);
+  }
+  .is-active .mini-bar__track {
+    border-color: var(--color-accent);
+    background: linear-gradient(90deg, var(--color-accent) 50%, transparent 50%);
+  }
+  .mini-bar__num {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+  }
+  .is-current .mini-bar__num {
+    color: var(--color-text);
+    font-weight: 700;
+  }
+</style>

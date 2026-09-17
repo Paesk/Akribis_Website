@@ -1,0 +1,312 @@
+---
+/**
+ * DEV ONLY design switcher. Rendered from BaseLayout behind `import.meta.env.DEV`,
+ * so it never ships in `npm run build`. Styles and script are `is:inline` on purpose:
+ * they are only emitted when this component is actually rendered.
+ */
+import { fonts } from '../../theme/fonts';
+import { theme, accents } from '../../theme/theme';
+
+const fontData = fonts.map((f) => ({ name: f.name, roles: f.roles, fallback: f.fallback }));
+const byRole = (role: 'heading' | 'body' | 'mono') => fonts.filter((f) => f.roles.includes(role));
+---
+
+<div class="dsw" data-dsw>
+  <button class="dsw__toggle" type="button" aria-expanded="false" aria-controls="dsw-panel" data-dsw-toggle>
+    <span aria-hidden="true">◐</span> Design <span class="dsw__dev">DEV</span>
+  </button>
+
+  <div class="dsw__panel" id="dsw-panel" hidden data-dsw-panel>
+    <p class="dsw__title">Design switcher <small>dev only – not in production</small></p>
+
+    <label class="dsw__field">
+      <span>Heading font</span>
+      <select data-dsw-key="headingFont">
+        {byRole('heading').map((f) => <option value={f.name}>{f.name}</option>)}
+      </select>
+    </label>
+
+    <label class="dsw__field">
+      <span>Body font</span>
+      <select data-dsw-key="bodyFont">
+        {byRole('body').map((f) => <option value={f.name}>{f.name}</option>)}
+      </select>
+    </label>
+
+    <label class="dsw__field">
+      <span>Mono font</span>
+      <select data-dsw-key="monoFont">
+        {byRole('mono').map((f) => <option value={f.name}>{f.name}</option>)}
+      </select>
+    </label>
+
+    <fieldset class="dsw__field">
+      <legend>Theme</legend>
+      <div class="dsw__seg">
+        <label><input type="radio" name="dsw-mode" value="light" data-dsw-key="mode" /> Light</label>
+        <label><input type="radio" name="dsw-mode" value="dark" data-dsw-key="mode" /> Dark</label>
+      </div>
+    </fieldset>
+
+    <fieldset class="dsw__field">
+      <legend>Accent</legend>
+      <div class="dsw__accents">
+        {
+          Object.entries(accents).map(([key, a]) => (
+            <label class="dsw__accent">
+              <input type="radio" name="dsw-accent" value={key} data-dsw-key="accent" />
+              <span class="dsw__swatch" style={`background:${a.light.color}`} />
+              {a.label}
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+
+    <label class="dsw__check">
+      <input type="checkbox" data-dsw-key="taglineLogoFont" />
+      Hero tagline in Zen Dots (logo font)
+    </label>
+
+    <div class="dsw__actions">
+      <button type="button" data-dsw-copy>Copy config</button>
+      <button type="button" data-dsw-reset>Reset</button>
+    </div>
+    <textarea class="dsw__out" readonly rows="10" hidden data-dsw-out aria-label="Theme config snippet"></textarea>
+    <p class="dsw__hint">Paste into <code>src/theme/theme.ts</code></p>
+  </div>
+</div>
+
+<style is:inline>
+  .dsw {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 9999;
+    font: 13px/1.4 system-ui, -apple-system, 'Segoe UI', sans-serif;
+    color: #111;
+  }
+  .dsw * {
+    box-sizing: border-box;
+  }
+  .dsw__toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-left: auto;
+    padding: 0.5rem 0.8rem;
+    border: 1px solid #111;
+    border-radius: 999px;
+    background: #fff;
+    color: #111;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
+  }
+  .dsw__dev {
+    padding: 0 0.35rem;
+    border-radius: 3px;
+    background: #ff4a1c;
+    color: #000;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+  }
+  .dsw__panel {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 0.5rem);
+    width: min(20rem, calc(100vw - 2rem));
+    max-height: calc(100vh - 6rem);
+    overflow: auto;
+    display: grid;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 1px solid #111;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  }
+  .dsw__panel[hidden] {
+    display: none;
+  }
+  .dsw__title {
+    margin: 0;
+    font-weight: 700;
+  }
+  .dsw__title small {
+    display: block;
+    font-weight: 400;
+    color: #555;
+  }
+  .dsw__field {
+    display: grid;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  .dsw__field > span,
+  .dsw__field legend {
+    padding: 0;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  .dsw select,
+  .dsw textarea {
+    width: 100%;
+    padding: 0.35rem;
+    border: 1px solid #999;
+    border-radius: 4px;
+    background: #fff;
+    color: #111;
+    font: inherit;
+  }
+  .dsw textarea {
+    font: 11px/1.4 ui-monospace, Consolas, monospace;
+  }
+  .dsw__seg {
+    display: flex;
+    gap: 1rem;
+  }
+  .dsw__accents {
+    display: grid;
+    gap: 0.3rem;
+  }
+  .dsw__accent,
+  .dsw__seg label,
+  .dsw__check {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    cursor: pointer;
+  }
+  .dsw__swatch {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+  }
+  .dsw__actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .dsw__actions button {
+    flex: 1;
+    padding: 0.45rem;
+    border: 1px solid #111;
+    border-radius: 4px;
+    background: #111;
+    color: #fff;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .dsw__actions button + button {
+    background: #fff;
+    color: #111;
+  }
+  .dsw__hint {
+    margin: 0;
+    color: #555;
+  }
+</style>
+
+<script is:inline define:vars={{ fontData, accents, defaults: theme }}>
+  const STORAGE_KEY = 'akribis-dev-theme';
+  const root = document.documentElement;
+  const panel = document.querySelector('[data-dsw-panel]');
+  const toggle = document.querySelector('[data-dsw-toggle]');
+  const out = document.querySelector('[data-dsw-out]');
+  const copyBtn = document.querySelector('[data-dsw-copy]');
+
+  const stack = (name) => {
+    const f = fontData.find((x) => x.name === name);
+    return f ? `'${f.name}', ${f.fallback}` : 'system-ui, sans-serif';
+  };
+
+  const load = () => {
+    try {
+      return { ...defaults, ...JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') };
+    } catch {
+      return { ...defaults };
+    }
+  };
+
+  let state = load();
+
+  const apply = () => {
+    root.style.setProperty('--font-heading', stack(state.headingFont));
+    root.style.setProperty('--font-body', stack(state.bodyFont));
+    root.style.setProperty('--font-mono', stack(state.monoFont));
+    root.style.setProperty('--font-tagline', state.taglineLogoFont ? 'var(--font-logo)' : 'var(--font-heading)');
+    root.dataset.theme = state.mode;
+    const accent = accents[state.accent] || accents.brand;
+    for (const mode of ['light', 'dark']) {
+      const p = mode === 'light' ? 'l' : 'd';
+      root.style.setProperty(`--accent-${p}`, accent[mode].color);
+      root.style.setProperty(`--accent-${p}-text`, accent[mode].text);
+      root.style.setProperty(`--accent-${p}-on`, accent[mode].on);
+    }
+    // sync controls
+    document.querySelectorAll('[data-dsw-key]').forEach((el) => {
+      const key = el.dataset.dswKey;
+      if (el.type === 'radio') el.checked = el.value === String(state[key]);
+      else if (el.type === 'checkbox') el.checked = !!state[key];
+      else el.value = state[key];
+    });
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch {
+      /* storage unavailable – ignore */
+    }
+  };
+
+  document.querySelectorAll('[data-dsw-key]').forEach((el) => {
+    el.addEventListener('change', () => {
+      const key = el.dataset.dswKey;
+      state = { ...state, [key]: el.type === 'checkbox' ? el.checked : el.value };
+      apply();
+    });
+  });
+
+  toggle.addEventListener('click', () => {
+    const open = toggle.getAttribute('aria-expanded') !== 'true';
+    toggle.setAttribute('aria-expanded', String(open));
+    panel.hidden = !open;
+  });
+
+  const snippet = () =>
+    [
+      'export const theme: ThemeConfig = {',
+      `  headingFont: '${state.headingFont}',`,
+      `  bodyFont: '${state.bodyFont}',`,
+      `  monoFont: '${state.monoFont}',`,
+      `  mode: '${state.mode}',`,
+      `  accent: '${state.accent}',`,
+      `  taglineLogoFont: ${!!state.taglineLogoFont},`,
+      '};',
+    ].join('\n');
+
+  copyBtn.addEventListener('click', async () => {
+    const text = snippet();
+    out.value = text;
+    out.hidden = false;
+    try {
+      await navigator.clipboard.writeText(text);
+      copyBtn.textContent = 'Copied ✓';
+    } catch {
+      out.select();
+      copyBtn.textContent = 'Select & copy ↓';
+    }
+    setTimeout(() => (copyBtn.textContent = 'Copy config'), 1800);
+  });
+
+  document.querySelector('[data-dsw-reset]').addEventListener('click', () => {
+    state = { ...defaults };
+    out.hidden = true;
+    apply();
+  });
+
+  apply();
+</script>

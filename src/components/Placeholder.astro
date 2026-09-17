@@ -1,0 +1,37 @@
+---
+/**
+ * Visible placeholder for content that does not exist yet (photos, logos, texts).
+ * Never replace with fake content – fill the real data and remove the placeholder.
+ */
+import { useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  label: string;
+  /** CSS aspect-ratio, e.g. "4 / 5". Omit to size via CSS/content. */
+  ratio?: string;
+  inline?: boolean;
+  /** Stands in for a photo/logo/image – hidden when printing (text placeholders stay visible) */
+  media?: boolean;
+  class?: string;
+}
+
+const { label, ratio, inline = false, media = false, class: className } = Astro.props;
+const t = useTranslations((Astro.currentLocale ?? 'en') as Lang);
+const tag = t('markers.placeholder');
+---
+
+{
+  inline ? (
+    <span class:list={['ph-inline', className]}>
+      <span class="ph-inline__tag">{tag}</span>
+      <span>
+        <slot>{label}</slot>
+      </span>
+    </span>
+  ) : (
+    <div class:list={['ph', { 'ph--media': media }, className]} style={ratio ? `aspect-ratio: ${ratio}` : undefined} role="note">
+      <span class="ph__tag">{tag}</span>
+      <span class="ph__label">{label}</span>
+    </div>
+  )
+}

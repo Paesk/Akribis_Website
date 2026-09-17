@@ -1,0 +1,72 @@
+---
+import SectionHeader from '../SectionHeader.astro';
+import { getSection } from '../../lib/content';
+import { useTranslations, type Lang } from '../../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  /** 1 when this section is the main content of its page */
+  level?: 1 | 2;
+  /** Optional section number, e.g. "01" */
+  index?: string;
+}
+
+const { lang, level = 2, index } = Astro.props;
+const t = useTranslations(lang);
+const { data, translationMissing, needsProofreading } = await getSection(lang, 'impact');
+---
+
+<section id="impact" class="section impact" aria-labelledby="impact-title">
+  <div class="container" lang={translationMissing ? 'en' : undefined}>
+    <SectionHeader
+      index={index}
+      level={level}
+      kicker={t('sections.impact')}
+      title={data.title}
+      headingId="impact-title"
+      translationMissing={translationMissing}
+      needsProofreading={needsProofreading}
+    />
+
+    <ul class="impact__list">
+      {
+        data.items.map((item) => (
+          <li class="impact__item">
+            <h3 class="impact__title">{item.title}</h3>
+            <p class="impact__text">{item.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .impact__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1.5rem, 4vw, 3rem);
+    list-style: none;
+  }
+  .impact__item {
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid var(--color-text);
+  }
+  .impact__title {
+    font-size: var(--step-3);
+  }
+  .impact__text {
+    font-size: var(--step-1);
+    line-height: 1.55;
+    color: var(--color-muted);
+    max-width: 42ch;
+  }
+  @media (max-width: 760px) {
+    .impact__list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

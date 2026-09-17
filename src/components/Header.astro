@@ -1,0 +1,319 @@
+---
+// Provided brand file, used unmodified as a single image (no inlining, no recolouring)
+import primaryLogo from '../assets/brand/Technical_Orange_Primary.svg';
+import { langs, languages, navRoutes, routeFor, useTranslations, type Lang, type RouteKey } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  /** Current page – highlighted in the nav; the language switch links to its equivalent */
+  route: RouteKey;
+}
+
+const { lang, route } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<header class="site-header" data-header>
+  <div class="container site-header__inner">
+    <a class="site-header__logo" href={routeFor('home', lang)} aria-label={t('nav.home')}>
+      <img
+        class="site-header__logo-img"
+        src={primaryLogo.src}
+        width={primaryLogo.width}
+        height={primaryLogo.height}
+        alt=""
+        decoding="async"
+        fetchpriority="high"
+      />
+    </a>
+
+    <button
+      class="site-header__toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+      data-nav-toggle
+    >
+      <span class="site-header__toggle-bars" aria-hidden="true"><span></span><span></span></span>
+      <span class="site-header__toggle-label">{t('nav.menu')}</span>
+    </button>
+
+    <nav id="site-nav" class="site-nav" aria-label={t('nav.label')} data-nav>
+      <ul class="site-nav__list">
+        {
+          navRoutes.map((key) => (
+            <li>
+              <a class="site-nav__link" href={routeFor(key, lang)} aria-current={key === route ? 'page' : undefined}>
+                {t(`nav.${key}`)}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <ul class="lang-switch" aria-label={t('nav.language')}>
+        {
+          langs.map((l, i) => (
+            <li>
+              {i > 0 && (
+                <span class="lang-switch__sep" aria-hidden="true">
+                  |
+                </span>
+              )}
+              {l === lang ? (
+                <span class="lang-switch__item is-current" aria-current="true" lang={l}>
+                  {languages[l]}
+                </span>
+              ) : (
+                <a class="lang-switch__item" href={routeFor(route, l)} hreflang={l} lang={l}>
+                  <span aria-hidden="true">{languages[l]}</span>
+                  <span class="visually-hidden">{l === 'de' ? 'Deutsch' : 'English'}</span>
+                </a>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-nav-toggle]');
+
+  // Mobile hamburger menu
+  const setOpen = (open: boolean) => {
+    toggle?.setAttribute('aria-expanded', String(open));
+    header?.classList.toggle('is-open', open);
+  };
+  toggle?.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && header?.classList.contains('is-open')) {
+      setOpen(false);
+      toggle?.focus();
+    }
+  });
+  // Close when resizing up to the desktop layout
+  window.matchMedia('(min-width: 961px)').addEventListener('change', (e) => e.matches && setOpen(false));
+
+  // Header border once scrolled
+  const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 8);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--color-bg) 88%, transparent);
+    backdrop-filter: saturate(1.4) blur(12px);
+    -webkit-backdrop-filter: saturate(1.4) blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s var(--ease);
+  }
+  .site-header.is-scrolled,
+  .site-header.is-open {
+    border-bottom-color: var(--color-border);
+  }
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    min-height: var(--header-h);
+  }
+  .site-header__logo {
+    display: block;
+    flex-shrink: 0;
+    padding-block: 0.5rem;
+  }
+  /* The wordmark is only 1/8 of the horizontal logo's height: 6.5rem gives ~13px letters on desktop */
+  .site-header__logo-img {
+    height: 6.5rem;
+    width: auto;
+    max-width: none;
+  }
+  @media (max-width: 960px) {
+    .site-header__logo-img {
+      height: 4.5rem;
+    }
+  }
+
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  .site-nav__list {
+    display: flex;
+    gap: 0.25rem;
+    list-style: none;
+  }
+  .site-nav__link {
+    position: relative;
+    display: block;
+    padding: 0.5rem 0.7rem;
+    font-family: var(--font-heading);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-decoration: none;
+    color: var(--color-text);
+  }
+  .site-nav__link::after {
+    content: '';
+    position: absolute;
+    left: 0.7rem;
+    right: 0.7rem;
+    bottom: 0.25rem;
+    height: 2px;
+    background: var(--color-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s var(--ease);
+  }
+  .site-nav__link:hover::after,
+  .site-nav__link[aria-current='page']::after {
+    transform: scaleX(1);
+  }
+  .site-nav__link[aria-current='page'] {
+    font-weight: 650;
+  }
+
+  .lang-switch {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.05em;
+  }
+  .lang-switch li {
+    display: flex;
+    align-items: center;
+  }
+  .lang-switch__sep {
+    color: var(--color-line);
+    padding-inline: 0.15rem;
+  }
+  .lang-switch__item {
+    display: inline-block;
+    padding: 0.4rem 0.4rem;
+    color: var(--color-muted);
+    text-decoration: none;
+  }
+  a.lang-switch__item:hover {
+    color: var(--color-text);
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+  .lang-switch__item.is-current {
+    color: var(--color-text);
+    font-weight: 700;
+  }
+
+  .site-header__toggle {
+    display: none;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 0.25rem;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .site-header__toggle-bars {
+    display: grid;
+    gap: 5px;
+    width: 22px;
+  }
+  .site-header__toggle-bars span {
+    display: block;
+    height: 2px;
+    background: currentColor;
+    transition: transform 0.25s var(--ease);
+  }
+  .is-open .site-header__toggle-bars span:first-child {
+    transform: translateY(3.5px) rotate(45deg);
+  }
+  .is-open .site-header__toggle-bars span:last-child {
+    transform: translateY(-3.5px) rotate(-45deg);
+  }
+
+  @media (max-width: 960px) {
+    .site-header__toggle {
+      display: inline-flex;
+    }
+    .site-nav {
+      position: absolute;
+      inset: 100% 0 auto 0;
+      display: none;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1rem;
+      padding: 0.5rem var(--gutter) 1.5rem;
+      background: var(--color-bg);
+      border-bottom: 1px solid var(--color-border);
+      max-height: calc(100dvh - var(--header-h));
+      overflow-y: auto;
+    }
+    .is-open .site-nav {
+      display: flex;
+    }
+    .site-nav__list {
+      flex-direction: column;
+    }
+    .site-nav__link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.85rem 0;
+      font-size: 1.25rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .site-nav__link::after {
+      display: none;
+    }
+    .site-nav__link[aria-current='page'] {
+      color: var(--color-accent-text);
+    }
+    .site-nav__link[aria-current='page']::before {
+      content: '';
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 50%;
+      background: var(--color-accent);
+    }
+    .lang-switch {
+      font-size: 1rem;
+    }
+    .lang-switch__item {
+      padding: 0.6rem 0.75rem;
+    }
+    .lang-switch li:first-child .lang-switch__item {
+      padding-left: 0;
+    }
+  }
+
+  /* Print: logo only, not sticky, no navigation (hidden in global.css) */
+  @media print {
+    .site-header {
+      position: static;
+      background: none;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      border-bottom: 1px solid #bbbbbb;
+    }
+    .site-header__inner {
+      min-height: 0;
+    }
+    .site-header__logo-img {
+      height: 3.5rem;
+    }
+  }
+</style>

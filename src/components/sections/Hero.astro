@@ -1,0 +1,234 @@
+---
+import Icon from '../Icon.astro';
+import { Picture } from 'astro:assets';
+import Marker from '../Marker.astro';
+import { getSection } from '../../lib/content';
+import { defaultLang, routeFor, useTranslations, withBase, type Lang } from '../../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const { data, translationMissing, needsProofreading } = await getSection(lang, 'hero');
+// Background media is language independent: fall back to the English file
+const master = lang === defaultLang ? data : (await getSection(defaultLang, 'hero')).data;
+const background = data.background ?? master.background;
+const backgroundVideo = data.background_video ?? master.background_video;
+const hasMedia = !!(background || backgroundVideo);
+---
+
+<section id="top" class:list={['hero', { 'hero--media': hasMedia }]} aria-labelledby="hero-title">
+  <div class="hero__stage container">
+    <div class="hero__media">
+      {
+        backgroundVideo ? (
+          <video class="hero__bg" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
+            <source src={/^https?:/.test(backgroundVideo) ? backgroundVideo : withBase(backgroundVideo)} />
+          </video>
+        ) : background ? (
+          <Picture
+            class="hero__bg"
+            src={background}
+            formats={['avif', 'webp']}
+            widths={[640, 1024, 1600, 2400]}
+            sizes="100vw"
+            alt={data.background_alt ?? master.background_alt ?? ''}
+            loading="eager"
+            fetchpriority="high"
+          />
+        ) : (
+          <div class="hero__ph ph--media" role="note">
+            <span class="ph__tag">{t('markers.placeholder')}</span>
+            <span class="hero__ph-label">{t('hero.mediaPlaceholder')}</span>
+          </div>
+        )
+      }
+      <div class="hero__ruler" aria-hidden="true"></div>
+    </div>
+
+    <div class="hero__content">
+      <h1 id="hero-title" class="hero__title" lang="en">{data.tagline}</h1>
+
+      <p class="hero__subline">
+        {data.subline}
+        <Marker translationMissing={translationMissing} needsProofreading={needsProofreading} />
+      </p>
+
+      <div class="hero__actions">
+        <a class="btn btn--primary" href={routeFor('project', lang)}>
+          {t('hero.ctaProject')}
+          <Icon name="arrow-right" size="1.1em" />
+        </a>
+        <a class="btn btn--secondary" href={routeFor('partners', lang)}>{t('hero.ctaPartner')}</a>
+      </div>
+
+      <p class="hero__line eyebrow">{t('meta.projectLine')}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-block: clamp(0.75rem, 2vw, 1.5rem) clamp(3rem, 6vw, 5rem);
+  }
+  .hero__stage {
+    position: relative;
+    display: grid;
+  }
+  .hero__media,
+  .hero__content {
+    grid-area: 1 / 1;
+  }
+
+  .hero__media {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius);
+    min-height: min(46rem, calc(100svh - var(--header-h) - 3rem));
+  }
+  .hero__bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero__bg :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero--media .hero__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.35) 55%, rgba(0, 0, 0, 0.1) 100%);
+  }
+
+  .hero__ph {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+    padding: clamp(1rem, 2.5vw, 1.75rem);
+    border: 1.5px dashed var(--color-line);
+    border-radius: var(--radius);
+    background-color: var(--color-surface-2);
+    background-image:
+      radial-gradient(circle at 78% 42%, color-mix(in srgb, var(--color-accent) 10%, transparent) 0, transparent 38%),
+      repeating-linear-gradient(-45deg, var(--color-hatch) 0 10px, transparent 10px 20px);
+    color: var(--color-muted);
+  }
+  .hero__ph-label {
+    font-size: 0.875rem;
+    text-align: right;
+    max-width: 22ch;
+  }
+
+  /* Measuring-scale motif along the bottom edge */
+  .hero__ruler {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 18px;
+    background-image:
+      repeating-linear-gradient(90deg, var(--color-line) 0 1px, transparent 1px 10px),
+      repeating-linear-gradient(90deg, var(--color-accent) 0 1.5px, transparent 1.5px 100px);
+    background-size:
+      100% 7px,
+      100% 18px;
+    background-repeat: repeat-x;
+    background-position: left bottom;
+    opacity: 0.8;
+  }
+
+  .hero__content {
+    position: relative;
+    z-index: 1;
+    align-self: end;
+    display: grid;
+    justify-items: start;
+    gap: 1.5rem;
+    padding: clamp(1.5rem, 5vw, 4rem);
+    padding-bottom: clamp(2.5rem, 6vw, 4.5rem);
+    max-width: 48rem;
+  }
+  .hero__title {
+    font-family: var(--font-tagline);
+    font-size: var(--step-4);
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    font-weight: 600;
+  }
+  .hero__subline {
+    font-size: var(--step-1);
+    line-height: 1.5;
+    max-width: 38ch;
+    color: var(--color-muted);
+  }
+  .hero__subline :global(.marker) {
+    margin-left: 0.25rem;
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+  }
+  .hero__line {
+    margin-top: 0.5rem;
+  }
+
+  /* With a real photo / video: light text on dark overlay */
+  .hero--media .hero__content {
+    color: #ffffff;
+  }
+  .hero--media .hero__subline,
+  .hero--media .hero__line {
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .hero--media .btn--secondary {
+    color: #ffffff;
+  }
+  .hero--media .btn--secondary:hover {
+    background: #ffffff;
+    border-color: #ffffff;
+    color: #000000;
+  }
+
+  @media (max-width: 640px) {
+    .hero__media {
+      min-height: 0;
+    }
+    .hero__stage {
+      grid-template-rows: auto auto;
+    }
+    .hero__media {
+      grid-area: 1 / 1;
+      aspect-ratio: 4 / 3;
+    }
+    .hero__content {
+      grid-area: 2 / 1;
+      padding-inline: 0;
+      padding-bottom: 0;
+    }
+    .hero--media .hero__content {
+      color: inherit;
+    }
+    .hero--media .hero__subline,
+    .hero--media .hero__line {
+      color: var(--color-muted);
+    }
+    .hero--media .btn--secondary {
+      color: var(--color-text);
+    }
+    .hero--media .hero__media::after {
+      display: none;
+    }
+  }
+</style>

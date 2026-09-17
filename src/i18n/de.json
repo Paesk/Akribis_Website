@@ -1,0 +1,157 @@
+{
+  "meta": {
+    "title": "Akribis – Beyond humanoid precision",
+    "description": "Akribis ist ein Fokusprojekt der ETH Zürich und entwickelt eine Korrekturstufe am Handgelenk, die industrielle Präzision auf humanoide Roboter bringt.",
+    "projectLine": "Ein Fokusprojekt der ETH Zürich am Advanced Manufacturing Lab"
+  },
+  "nav": {
+    "label": "Hauptnavigation",
+    "project": "Projekt",
+    "technology": "Technologie",
+    "progress": "Fortschritt",
+    "team": "Team",
+    "partners": "Partner",
+    "contact": "Kontakt",
+    "skip": "Zum Inhalt springen",
+    "menu": "Menü",
+    "language": "Sprache",
+    "switchTo": "English",
+    "home": "Akribis – Startseite"
+  },
+  "hero": {
+    "ctaProject": "Zum Projekt",
+    "ctaPartner": "Partner werden",
+    "mediaPlaceholder": "Hero-Foto / -Video des Prototyps"
+  },
+  "pages": {
+    "project": {
+      "title": "Projekt",
+      "description": "Warum humanoide Roboter eine präzise Korrekturstufe am Werkzeug brauchen – Herausforderung, Idee, Ziel und Weg des ETH-Fokusprojekts Akribis."
+    },
+    "technology": {
+      "title": "Technologie",
+      "description": "Mechanische Architektur, Elektronik, Makro-Mikro-Regelung und experimentelle Validierung der Akribis-Korrekturstufe."
+    },
+    "progress": {
+      "title": "Fortschritt",
+      "description": "Verfolgen Sie das Projekt Akribis Etappe für Etappe – vom Kick-off bis zum Focus Rollout an der ETH Zürich."
+    },
+    "team": {
+      "title": "Team",
+      "description": "Die Studierenden, Coaches und Betreuenden hinter dem ETH-Fokusprojekt Akribis."
+    },
+    "partners": {
+      "title": "Partner",
+      "description": "Partner von Akribis werden, einem Fokusprojekt der ETH Zürich: Sichtbarkeit im Umfeld der ETH, direkter Kontakt zu angehenden Ingenieurinnen und Ingenieuren und neue Lösungen für die robotergestützte Fertigung."
+    },
+    "contact": {
+      "title": "Kontakt",
+      "description": "Kontakt zum ETH-Fokusprojekt Akribis."
+    },
+    "imprint": {
+      "title": "Impressum",
+      "description": "Impressum der Akribis-Website."
+    }
+  },
+  "home": {
+    "learnMore": "Mehr erfahren",
+    "learnMoreAbout": "Mehr über das Projekt erfahren",
+    "viewProgress": "Alle Etappen ansehen",
+    "currentStage": "Aktuelle Etappe",
+    "partnersLink": "Warum Partner von Akribis werden"
+  },
+  "project": {
+    "contextLabel": "Über das Projekt",
+    "focusLink": "Mehr über Fokusprojekte"
+  },
+  "markers": {
+    "placeholder": "Platzhalter",
+    "translationTbd": "Translation TBD",
+    "proofreadingTbd": "Proofreading TBD",
+    "tbd": "TBD",
+    "target": "Ziel"
+  },
+  "sections": {
+    "challenge": "Herausforderung",
+    "project": "Projekt",
+    "technology": "Technologie",
+    "progress": "Fortschritt",
+    "impact": "Wirkung",
+    "team": "Team",
+    "coaches": "Coaches & Betreuung",
+    "partners": "Partner",
+    "contact": "Kontakt"
+  },
+  "challenge": {
+    "sources": "Quellen"
+  },
+  "technology": {
+    "specsTitle": "Spezifikationen",
+    "parameter": "Parameter",
+    "value": "Wert",
+    "imagePlaceholder": "Icon / Bild"
+  },
+  "progress": {
+    "stageOf": "Etappe {current} von {total}",
+    "stagesLabel": "Projektetappen",
+    "status": {
+      "done": "Abgeschlossen",
+      "active": "In Arbeit",
+      "upcoming": "Geplant"
+    },
+    "learned": "Was wir gelernt haben",
+    "gallery": "Galerie",
+    "video": "Video",
+    "textPlaceholder": "Update-Text zur Etappe",
+    "galleryPlaceholder": "Fotos zur Etappe",
+    "learnedPlaceholder": "Was wir gelernt haben",
+    "upcomingNote": "Diese Etappe hat noch nicht begonnen."
+  },
+  "team": {
+    "groupPhoto": "Gruppenfoto",
+    "photo": "Foto",
+    "softRole": "Soft Role",
+    "linkedin": "LinkedIn-Profil von {name}",
+    "subteam": "Subteam",
+    "subteams": {
+      "controls": "Regelung",
+      "electronics": "Elektronik",
+      "mechanics": "Mechanik"
+    }
+  },
+  "coaches": {
+    "academicPartners": "Akademische Partner",
+    "logo": "Logo"
+  },
+  "posts": {
+    "title": "Neues von unseren Kanälen",
+    "stageTitle": "Auf unseren Kanälen",
+    "open": "Beitrag auf {platform} öffnen",
+    "newTab": "öffnet in neuem Tab",
+    "tbd": "Post TBD",
+    "placeholderCaption": "Platzhalter-Beitrag",
+    "imagePlaceholder": "Beitragsbild"
+  },
+  "partners": {
+    "wallTitle": "Unsere Partner",
+    "supporters": "Unterstützer"
+  },
+  "contact": {
+    "email": "E-Mail",
+    "sponsoring": "Sponsoring",
+    "address": "Adresse",
+    "socials": "Social Media",
+    "notCreated": "Konto noch nicht erstellt",
+    "notRequested": "E-Mail-Adresse noch nicht beantragt",
+    "toConfirm": "zu bestätigen"
+  },
+  "footer": {
+    "imprint": "Impressum",
+    "pages": "Seiten"
+  },
+  "imprint": {
+    "title": "Impressum",
+    "back": "Zurück zur Startseite",
+    "placeholder": "Impressum / rechtliche Angaben – gemäss Vorgaben der ETH zu ergänzen"
+  }
+}

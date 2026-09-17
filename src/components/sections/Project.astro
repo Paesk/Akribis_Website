@@ -1,0 +1,241 @@
+---
+import SectionHeader from '../SectionHeader.astro';
+import Diagram from '../Diagram.astro';
+import { getSection } from '../../lib/content';
+import { useTranslations, type Lang } from '../../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  /** 1 when this section is the main content of its page */
+  level?: 1 | 2;
+  /** Optional section number, e.g. "01" */
+  index?: string;
+}
+
+const { lang, level = 2, index } = Astro.props;
+const t = useTranslations(lang);
+const { data, translationMissing, needsProofreading } = await getSection(lang, 'project');
+const contentLang = translationMissing ? 'en' : undefined;
+---
+
+<section id="project" class="section project" aria-labelledby="project-title">
+  <div class="container" lang={contentLang}>
+    <SectionHeader
+      index={index}
+      level={level}
+      kicker={t('sections.project')}
+      title={data.title}
+      headingId="project-title"
+      translationMissing={translationMissing}
+      needsProofreading={needsProofreading}
+    />
+
+    <div class="project__idea">
+      <p class="eyebrow">{data.idea.title}</p>
+      <p class="project__idea-text">{data.idea.text}</p>
+    </div>
+
+    <div class="project__diagram">
+      <Diagram blocks={data.diagram} />
+    </div>
+
+    <div class="project__facts">
+      <article class="fact">
+        <h3 class="eyebrow">{data.build.title}</h3>
+        <p class="fact__text">{data.build.text}</p>
+      </article>
+
+      <article class="fact fact--goal">
+        <h3 class="eyebrow">{data.goal.title}</h3>
+        <p class="fact__goal">{data.goal.text}</p>
+      </article>
+
+      <article class="fact fact--target">
+        <h3>
+          <span class="badge badge--accent">{data.target.title}</span>
+        </h3>
+        <p class="fact__value mono">
+          {data.target.value}
+          {data.target.range && <span class="fact__range">{data.target.range}</span>}
+        </p>
+        <p class="fact__label">
+          {data.target.label} <span class="fact__note">({t('markers.target').toLowerCase()})</span>
+        </p>
+      </article>
+    </div>
+
+    <div class="path">
+      <div class="path__intro">
+        <h3 class="eyebrow">{data.path.title}</h3>
+        <p class="lead">{data.path.text}</p>
+      </div>
+      {
+        data.path.steps.length > 0 && (
+          <ol class="path__steps">
+            {data.path.steps.map((step, i) => (
+              <li class="path__step">
+                <span class="path__dot mono" aria-hidden="true">
+                  {i + 1}
+                </span>
+                <span>{step}</span>
+              </li>
+            ))}
+          </ol>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .project__idea {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
+    gap: 1.5rem clamp(2rem, 6vw, 6rem);
+    margin-bottom: clamp(3rem, 6vw, 4.5rem);
+  }
+  .project__idea .eyebrow {
+    padding-top: 0.5rem;
+  }
+  .project__idea-text {
+    font-family: var(--font-heading);
+    font-size: var(--step-2);
+    line-height: 1.35;
+    max-width: 40ch;
+  }
+
+  .project__diagram {
+    margin-bottom: clamp(3rem, 6vw, 4.5rem);
+  }
+
+  /* --- Facts --- */
+  .project__facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: clamp(3rem, 6vw, 4.5rem);
+  }
+  .fact {
+    display: grid;
+    align-content: start;
+    gap: 1rem;
+    padding: 2rem clamp(1rem, 2.5vw, 2rem) 2.25rem;
+  }
+  .fact:first-child {
+    padding-left: 0;
+  }
+  .fact + .fact {
+    border-left: 1px solid var(--color-border);
+  }
+  .fact h3 {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .fact__text {
+    font-size: var(--step-1);
+    line-height: 1.5;
+  }
+  .fact__goal {
+    font-family: var(--font-heading);
+    font-size: var(--step-2);
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .fact__value {
+    font-size: clamp(2rem, 1.4rem + 2vw, 2.9rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--color-accent-text);
+  }
+  .fact__range {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.55em;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: var(--color-text);
+  }
+  .fact__label {
+    color: var(--color-muted);
+    font-size: 0.9375rem;
+  }
+  .fact__note {
+    font-style: italic;
+  }
+
+  /* --- Path --- */
+  .path {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 2rem clamp(2rem, 6vw, 6rem);
+    align-items: start;
+  }
+  .path__intro {
+    display: grid;
+    gap: 1rem;
+  }
+  .path__steps {
+    position: relative;
+    display: grid;
+    gap: 1.5rem;
+    list-style: none;
+    padding-top: 2rem;
+  }
+  .path__steps::before {
+    content: '';
+    position: absolute;
+    left: 1rem;
+    top: 3rem;
+    bottom: 1rem;
+    width: 1.5px;
+    background: linear-gradient(var(--color-accent), var(--color-border));
+  }
+  .path__step {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-family: var(--font-heading);
+    font-size: var(--step-1);
+    font-weight: 500;
+  }
+  .path__dot {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 2rem;
+    height: 2rem;
+    border: 1.5px solid var(--color-accent);
+    border-radius: 50%;
+    background: var(--color-bg);
+    font-size: 0.8125rem;
+    color: var(--color-accent-text);
+  }
+
+  @media (max-width: 900px) {
+    .project__idea,
+    .path {
+      grid-template-columns: 1fr;
+    }
+    .project__facts {
+      grid-template-columns: 1fr;
+    }
+    .fact {
+      padding-inline: 0;
+    }
+    .fact + .fact {
+      border-left: 0;
+      border-top: 1px solid var(--color-border);
+    }
+    .path__steps {
+      padding-top: 0;
+    }
+    .path__steps::before {
+      top: 1rem;
+    }
+  }
+</style>

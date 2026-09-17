@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Contact from '../../components/sections/Contact.astro';
+import { langPaths, type Lang } from '../../i18n/utils';
+
+export function getStaticPaths() {
+  return langPaths();
+}
+
+const lang = Astro.params.lang as Lang;
+---
+
+<BaseLayout lang={lang} route="contact">
+  <Contact lang={lang} level={1} />
+</BaseLayout>

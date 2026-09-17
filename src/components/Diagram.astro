@@ -1,0 +1,114 @@
+---
+/** Macro → micro → process block diagram (data from the project section content). */
+interface Props {
+  blocks: { label: string; scale: string; text?: string; highlight?: boolean }[];
+  compact?: boolean;
+}
+
+const { blocks, compact = false } = Astro.props;
+---
+
+<ol class:list={['diagram', { 'diagram--compact': compact }]}>
+  {
+    blocks.map((block, i) => (
+      <li class:list={['diagram__block', { 'is-highlight': block.highlight }]}>
+        <span class="diagram__scale eyebrow">
+          <span class="diagram__num" aria-hidden="true">
+            {String(i + 1).padStart(2, '0')}
+          </span>
+          {block.scale}
+        </span>
+        <span class="diagram__label">{block.label}</span>
+        {block.text && <span class="diagram__text">{block.text}</span>}
+        {i < blocks.length - 1 && (
+          <svg class="diagram__arrow" width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M3 12h17m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.6" />
+          </svg>
+        )}
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .diagram {
+    --diagram-gap: clamp(2.25rem, 4vw, 3.5rem);
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--diagram-gap);
+    list-style: none;
+  }
+  .diagram__block {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 0.4rem;
+    min-height: 10rem;
+    padding: 1.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+  }
+  .diagram--compact .diagram__block {
+    min-height: 0;
+    padding: 1.1rem 1.25rem;
+  }
+  .diagram__block.is-highlight {
+    border-color: var(--color-accent);
+    box-shadow: inset 0 3px 0 var(--color-accent);
+  }
+  .diagram__scale {
+    display: flex;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+  }
+  .diagram--compact .diagram__scale {
+    margin-bottom: 0.5rem;
+  }
+  .diagram__num {
+    color: var(--color-accent-text);
+  }
+  .diagram__label {
+    font-family: var(--font-heading);
+    font-size: var(--step-2);
+    font-weight: 600;
+    line-height: 1.15;
+  }
+  .diagram--compact .diagram__label {
+    font-size: var(--step-1);
+  }
+  .diagram__text {
+    color: var(--color-muted);
+  }
+  .diagram--compact .diagram__text {
+    font-size: 0.9375rem;
+  }
+  .diagram__arrow {
+    position: absolute;
+    top: 50%;
+    right: calc(-1 * var(--diagram-gap));
+    width: var(--diagram-gap);
+    height: 1.5rem;
+    padding-inline: 0.4rem;
+    transform: translateY(-50%);
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 760px) {
+    .diagram {
+      grid-template-columns: 1fr;
+    }
+    .diagram__block {
+      min-height: 0;
+    }
+    .diagram__arrow {
+      top: 100%;
+      right: auto;
+      left: 50%;
+      width: 2rem;
+      height: var(--diagram-gap);
+      padding: 0;
+      transform: translateX(-50%) rotate(90deg);
+    }
+  }
+</style>

@@ -1,0 +1,159 @@
+---
+import Heading from '../Heading.astro';
+import SectionHeader from '../SectionHeader.astro';
+import ContactEmail from '../ContactEmail.astro';
+import SocialLinks from '../SocialLinks.astro';
+import { getSection } from '../../lib/content';
+import { site, visibleSocials } from '../../lib/site';
+import { useTranslations, type Lang } from '../../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  /** 1 when this section is the main content of its page */
+  level?: 1 | 2;
+  /** Optional section number, e.g. "01" */
+  index?: string;
+}
+
+const { lang, level = 2, index } = Astro.props;
+const t = useTranslations(lang);
+const { data, translationMissing, needsProofreading } = await getSection(lang, 'contact');
+const { sponsoring, address, email } = site;
+---
+
+<section id="contact" class="section contact" aria-labelledby="contact-title">
+  <div class="container">
+    <SectionHeader
+      index={index}
+      level={level}
+      kicker={t('sections.contact')}
+      title={data.title}
+      headingId="contact-title"
+      translationMissing={translationMissing}
+      needsProofreading={needsProofreading}
+    >
+      {data.intro && <p class="lead">{data.intro}</p>}
+    </SectionHeader>
+
+    <div class="contact__grid">
+      <div class="contact__item">
+        <Heading level={level + 1} class="eyebrow">{t('contact.email')}</Heading>
+        <p class="contact__value"><ContactEmail /></p>
+        {email.placeholder && <p class="contact__note">{t('contact.notRequested')}</p>}
+      </div>
+
+      <div class="contact__item">
+        <Heading level={level + 1} class="eyebrow">{t('contact.sponsoring')}</Heading>
+        <p class="contact__value">
+          <strong>{sponsoring.name}</strong><br />
+          <a class="text-link" href={`mailto:${sponsoring.email}`}>{sponsoring.email}</a>
+        </p>
+      </div>
+
+      <div class="contact__item">
+        <Heading level={level + 1} class="eyebrow">{t('contact.address')}</Heading>
+        {
+          address.placeholder ? (
+            <div class="contact__ph">
+              <span class="ph__tag">{t('markers.placeholder')}</span>
+              <address>
+                {address.lines.map((line) => (
+                  <span>{line}</span>
+                ))}
+              </address>
+              <span class="contact__note">{t('contact.toConfirm')}</span>
+            </div>
+          ) : (
+            <address class="contact__value">
+              {address.lines.map((line) => (
+                <span>{line}</span>
+              ))}
+            </address>
+          )
+        }
+      </div>
+
+      {
+        visibleSocials.length > 0 && (
+          <div class="contact__item">
+            <Heading level={level + 1} class="eyebrow">{t('contact.socials')}</Heading>
+            <SocialLinks />
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 1px solid var(--color-text);
+  }
+  .contact__item {
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: 0.9rem;
+    padding: 1.75rem clamp(1rem, 2vw, 1.75rem) 0;
+    min-width: 0;
+  }
+  .contact__item:first-child {
+    padding-left: 0;
+  }
+  .contact__item + .contact__item {
+    border-left: 1px solid var(--color-border);
+  }
+  .contact__value {
+    font-size: var(--step-0);
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+  .contact__note {
+    font-size: 0.8125rem;
+    color: var(--color-muted);
+    font-family: var(--font-mono);
+  }
+  address {
+    display: grid;
+    font-style: normal;
+  }
+  .contact__ph {
+    display: grid;
+    justify-items: start;
+    gap: 0.6rem;
+    padding: 0.9rem 1rem;
+    border: 1.5px dashed var(--color-line);
+    border-radius: var(--radius);
+    background: var(--color-surface-2);
+  }
+  @media (max-width: 1000px) {
+    .contact__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .contact__item:nth-child(3) {
+      padding-left: 0;
+      border-left: 0;
+    }
+    .contact__item:nth-child(n + 3) {
+      padding-top: 2rem;
+      margin-top: 1.75rem;
+      border-top: 1px solid var(--color-border);
+    }
+  }
+  @media (max-width: 560px) {
+    .contact__grid {
+      grid-template-columns: 1fr;
+    }
+    .contact__item {
+      padding-left: 0;
+      border-left: 0 !important;
+    }
+    .contact__item + .contact__item {
+      padding-top: 1.75rem;
+      margin-top: 1.75rem;
+      border-top: 1px solid var(--color-border);
+    }
+  }
+</style>

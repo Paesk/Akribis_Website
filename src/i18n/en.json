@@ -1,0 +1,157 @@
+{
+  "meta": {
+    "title": "Akribis – Beyond humanoid precision",
+    "description": "Akribis is an ETH Zurich Focus Project developing a wrist-mounted correction stage that brings industrial precision to humanoid robots.",
+    "projectLine": "An ETH Zurich Focus Project at the Advanced Manufacturing Lab"
+  },
+  "nav": {
+    "label": "Main navigation",
+    "project": "Project",
+    "technology": "Technology",
+    "progress": "Progress",
+    "team": "Team",
+    "partners": "Partners",
+    "contact": "Contact",
+    "skip": "Skip to content",
+    "menu": "Menu",
+    "language": "Language",
+    "switchTo": "Deutsch",
+    "home": "Akribis – home"
+  },
+  "hero": {
+    "ctaProject": "Discover the project",
+    "ctaPartner": "Become a partner",
+    "mediaPlaceholder": "Hero photo / video of prototype"
+  },
+  "pages": {
+    "project": {
+      "title": "Project",
+      "description": "Why humanoid robots need a precise correction stage at the tool – challenge, idea, goal and path of the ETH Zurich Focus Project Akribis."
+    },
+    "technology": {
+      "title": "Technology",
+      "description": "Mechanical architecture, electronics, macro–micro control and experimental validation of the Akribis correction stage."
+    },
+    "progress": {
+      "title": "Progress",
+      "description": "Follow the Akribis project stage by stage – from kick-off to the Focus Rollout at ETH Zurich."
+    },
+    "team": {
+      "title": "Team",
+      "description": "The students, coaches and supervisors behind the ETH Zurich Focus Project Akribis."
+    },
+    "partners": {
+      "title": "Partners",
+      "description": "Partner with Akribis, an ETH Zurich Focus Project: visibility at ETH Zurich, direct contact with future engineers and new solutions for robot-based manufacturing."
+    },
+    "contact": {
+      "title": "Contact",
+      "description": "Get in touch with the ETH Zurich Focus Project Akribis."
+    },
+    "imprint": {
+      "title": "Imprint",
+      "description": "Imprint of the Akribis website."
+    }
+  },
+  "home": {
+    "learnMore": "Learn more",
+    "learnMoreAbout": "Learn more about the project",
+    "viewProgress": "View all stages",
+    "currentStage": "Current stage",
+    "partnersLink": "Why partner with Akribis"
+  },
+  "project": {
+    "contextLabel": "About the project",
+    "focusLink": "More about Focus Projects"
+  },
+  "markers": {
+    "placeholder": "Placeholder",
+    "translationTbd": "Translation TBD",
+    "proofreadingTbd": "Proofreading TBD",
+    "tbd": "TBD",
+    "target": "Target"
+  },
+  "sections": {
+    "challenge": "Challenge",
+    "project": "Project",
+    "technology": "Technology",
+    "progress": "Progress",
+    "impact": "Impact",
+    "team": "Team",
+    "coaches": "Coaches & Supervision",
+    "partners": "Partners",
+    "contact": "Contact"
+  },
+  "challenge": {
+    "sources": "Sources"
+  },
+  "technology": {
+    "specsTitle": "Specifications",
+    "parameter": "Parameter",
+    "value": "Value",
+    "imagePlaceholder": "Icon / image"
+  },
+  "progress": {
+    "stageOf": "Stage {current} of {total}",
+    "stagesLabel": "Project stages",
+    "status": {
+      "done": "Done",
+      "active": "In progress",
+      "upcoming": "Upcoming"
+    },
+    "learned": "What we learned",
+    "gallery": "Gallery",
+    "video": "Video",
+    "textPlaceholder": "Stage update text",
+    "galleryPlaceholder": "Stage photos",
+    "learnedPlaceholder": "What we learned",
+    "upcomingNote": "This stage has not started yet."
+  },
+  "team": {
+    "groupPhoto": "Group photo",
+    "photo": "Photo",
+    "softRole": "Soft role",
+    "linkedin": "LinkedIn profile of {name}",
+    "subteam": "Subteam",
+    "subteams": {
+      "controls": "Controls",
+      "electronics": "Electronics",
+      "mechanics": "Mechanics"
+    }
+  },
+  "coaches": {
+    "academicPartners": "Academic partners",
+    "logo": "logo"
+  },
+  "posts": {
+    "title": "Latest from our socials",
+    "stageTitle": "On our socials",
+    "open": "Open post on {platform}",
+    "newTab": "opens in a new tab",
+    "tbd": "Post TBD",
+    "placeholderCaption": "Placeholder post",
+    "imagePlaceholder": "Post image"
+  },
+  "partners": {
+    "wallTitle": "Our partners",
+    "supporters": "Supporters"
+  },
+  "contact": {
+    "email": "Email",
+    "sponsoring": "Sponsoring",
+    "address": "Address",
+    "socials": "Social media",
+    "notCreated": "account not yet created",
+    "notRequested": "email address not yet requested",
+    "toConfirm": "to confirm"
+  },
+  "footer": {
+    "imprint": "Imprint",
+    "pages": "Pages"
+  },
+  "imprint": {
+    "title": "Imprint",
+    "back": "Back to homepage",
+    "placeholder": "Imprint / legal text – to be provided according to ETH requirements"
+  }
+}

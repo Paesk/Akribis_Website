@@ -1,0 +1,74 @@
+---
+/**
+ * Social accounts from src/content/site.json.
+ * Hidden when disabled or without URL; shown as a non-clickable placeholder while
+ * `placeholder: true` (accounts not yet created → no dead links).
+ */
+import Placeholder from './Placeholder.astro';
+import { visibleSocials } from '../lib/site';
+import { useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+const t = useTranslations((Astro.currentLocale ?? 'en') as Lang);
+---
+
+{
+  visibleSocials.length > 0 && (
+    <ul class:list={['socials', { 'socials--compact': compact }]}>
+      {visibleSocials.map((s) => (
+        <li>
+          {s.placeholder ? (
+            <Placeholder inline label={s.network}>
+              <span class="socials__name">{s.network}</span>
+              {s.handle && <span class="socials__handle mono">{s.handle}</span>}
+              {!compact && <span class="socials__note">({t('contact.notCreated')})</span>}
+            </Placeholder>
+          ) : (
+            <a class="socials__link" href={s.url} rel="noopener noreferrer" target="_blank">
+              <span class="socials__name">{s.network}</span>
+              {s.handle && <span class="socials__handle mono">{s.handle}</span>}
+              <span class="visually-hidden">(opens in a new tab)</span>
+            </a>
+          )}
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+<style>
+  .socials {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    list-style: none;
+  }
+  .socials--compact {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .socials__name {
+    font-weight: 600;
+  }
+  .socials__handle,
+  .socials__note {
+    font-size: 0.875em;
+    color: var(--color-muted);
+  }
+  .socials__link {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: baseline;
+    text-decoration: none;
+  }
+  .socials__link:hover .socials__name {
+    color: var(--color-accent-text);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+</style>

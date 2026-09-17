@@ -1,0 +1,41 @@
+---
+/** Grid of social media post cards – used on the home page and in the Progress stage panels. */
+import PostCard from './PostCard.astro';
+import type { ResolvedPost } from '../lib/posts';
+import type { Lang } from '../i18n/utils';
+
+interface Props {
+  posts: ResolvedPost[];
+  lang: Lang;
+  class?: string;
+}
+
+const { posts, lang, class: className } = Astro.props;
+---
+
+{
+  posts.length > 0 && (
+    <ul class:list={['post-list', className]} role="list">
+      {posts.map((post) => (
+        <li>
+          <PostCard post={post} lang={lang} />
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+<style>
+  .post-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.5rem);
+    list-style: none;
+  }
+  @media (max-width: 760px) {
+    .post-list {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.75rem;
+    }
+  }
+</style>

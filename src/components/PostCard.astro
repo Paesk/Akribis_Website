@@ -1,0 +1,185 @@
+---
+/**
+ * One social media post as a link card: local image, platform + stage, short caption.
+ * No embeds – only the link goes to the platform. Placeholder posts render as a
+ * non-clickable card with a "Post TBD" marker.
+ */
+import { Picture } from 'astro:assets';
+import Placeholder from './Placeholder.astro';
+import PlatformIcon from './PlatformIcon.astro';
+import Icon from './Icon.astro';
+import type { ResolvedPost } from '../lib/posts';
+import { useTranslations, type Lang } from '../i18n/utils';
+
+interface Props {
+  post: ResolvedPost;
+  lang: Lang;
+}
+
+const { post, lang } = Astro.props;
+const t = useTranslations(lang);
+
+const Tag = post.url ? 'a' : 'div';
+const linkAttrs = post.url
+  ? {
+      href: post.url,
+      target: '_blank',
+      rel: 'noopener noreferrer',
+      'aria-label': `${t('posts.open', { platform: post.platformName })} (${t('posts.newTab')}) – ${post.stageTitle}: ${post.caption}`,
+    }
+  : {};
+---
+
+<Tag class:list={['post-card', { 'post-card--placeholder': post.placeholder }]} {...linkAttrs}>
+  <div class="post-card__media">
+    {
+      post.image ? (
+        <Picture
+          src={post.image}
+          formats={['avif', 'webp']}
+          widths={[240, 400, 640]}
+          sizes="(max-width: 760px) 7rem, (max-width: 1200px) 33vw, 380px"
+          alt=""
+          loading="lazy"
+        />
+      ) : (
+        <Placeholder media class="post-card__ph" label={t('posts.imagePlaceholder')} />
+      )
+    }
+  </div>
+
+  <div class="post-card__body">
+    <p class="post-card__meta">
+      <PlatformIcon platform={post.platform} size="1.15rem" class="post-card__icon" />
+      <span class="visually-hidden">{post.platformName}:</span>
+      <span class="post-card__stage">{post.stageTitle}</span>
+      {post.placeholder && <span class="post-card__tbd" lang="en">{t('posts.tbd')}</span>}
+      {
+        post.url && (
+          <Icon name="external" size="0.8rem" class="post-card__external" />
+        )
+      }
+    </p>
+    <p class="post-card__caption" lang={post.captionFallback ? 'en' : undefined}>{post.caption}</p>
+  </div>
+</Tag>
+
+<style>
+  .post-card {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100%;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  a.post-card {
+    transition: border-color 0.2s var(--ease);
+  }
+  a.post-card:hover {
+    border-color: var(--color-text);
+  }
+  a.post-card:hover .post-card__caption {
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent);
+    text-underline-offset: 0.2em;
+  }
+  .post-card--placeholder {
+    border-style: dashed;
+    border-color: var(--color-line);
+  }
+
+  .post-card__media {
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: var(--color-surface-2);
+  }
+  .post-card__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .post-card__media :global(.post-card__ph) {
+    height: 100%;
+    border: 0;
+    border-bottom: 1px dashed var(--color-line);
+    border-radius: 0;
+  }
+
+  .post-card__body {
+    display: grid;
+    align-content: start;
+    gap: 0.4rem;
+    padding: 0.9rem 1rem 1.1rem;
+  }
+  .post-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    color: var(--color-muted);
+  }
+  .post-card__meta :global(.post-card__icon) {
+    color: var(--color-text);
+  }
+  .post-card__stage {
+    font-family: var(--font-heading);
+    font-weight: 500;
+  }
+  .post-card__meta :global(.post-card__external) {
+    margin-left: auto;
+    color: var(--color-accent-text);
+  }
+  .post-card__tbd {
+    padding: 0 0.4rem;
+    border: 1px dashed var(--color-line);
+    border-radius: 2px;
+    background: var(--color-surface-2);
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.6;
+    white-space: nowrap;
+  }
+  .post-card__caption {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    line-height: 1.45;
+  }
+
+  /* Phones: compact row – image left, text right */
+  @media (max-width: 760px) {
+    .post-card {
+      grid-template-rows: none;
+      grid-template-columns: 6.5rem minmax(0, 1fr);
+    }
+    .post-card__media {
+      height: 100%;
+      min-height: 6.5rem;
+    }
+    .post-card__media :global(.post-card__ph) {
+      border-bottom: 0;
+      border-right: 1px dashed var(--color-line);
+    }
+    .post-card__media :global(.ph__label) {
+      display: none;
+    }
+    .post-card__media :global(.ph__tag) {
+      padding: 0.05rem 0.25rem;
+      font-size: 0.5625rem;
+      letter-spacing: 0.04em;
+    }
+    .post-card__body {
+      padding: 0.75rem 0.9rem;
+    }
+  }
+</style>

@@ -1,0 +1,294 @@
+---
+import Icon from '../Icon.astro';
+import Heading from '../Heading.astro';
+import { Image } from 'astro:assets';
+import SectionHeader from '../SectionHeader.astro';
+import { assetImage, getSection, localize } from '../../lib/content';
+import { partnersData, site } from '../../lib/site';
+import { useTranslations, type Lang } from '../../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  /** 1 when this section is the main content of its page */
+  level?: 1 | 2;
+  /** Optional section number, e.g. "01" */
+  index?: string;
+}
+
+const { lang, level = 2, index } = Astro.props;
+const t = useTranslations(lang);
+const { data, translationMissing, needsProofreading } = await getSection(lang, 'partners');
+
+// Logo wall: hidden entirely while there are no partners; empty tiers are skipped
+const groups = partnersData.tiers
+  .map((tier) => ({
+    id: tier.id,
+    name: localize(tier.name, lang),
+    partners: partnersData.partners
+      .filter((p) => p.tier === tier.id)
+      .map((p) => ({ ...p, image: assetImage('partners', p.logo) })),
+  }))
+  .filter((g) => g.partners.length > 0);
+
+const { name: sponsorName, email: sponsorEmail } = site.sponsoring;
+---
+
+<section id="partners" class="section partners" aria-labelledby="partners-title">
+  <div class="container">
+    <SectionHeader
+      index={index}
+      level={level}
+      kicker={t('sections.partners')}
+      title={data.title}
+      headingId="partners-title"
+      translationMissing={translationMissing}
+      needsProofreading={needsProofreading}
+    />
+
+    <div class="partners__body" lang={translationMissing ? 'en' : undefined}>
+      <section class="partners__block" aria-labelledby="partners-focus-title">
+        <Heading level={level + 1} id="partners-focus-title" class="partners__heading">{data.focus.title}</Heading>
+        <p class="lead partners__focus">{data.focus.text}</p>
+      </section>
+
+      <section class="partners__block" aria-labelledby="partners-why-title">
+        <Heading level={level + 1} id="partners-why-title" class="partners__heading">{data.why.title}</Heading>
+        <ul class="partners__points">
+          {
+            data.why.points.map((point) => (
+              <li class="partners__point">
+                <Heading level={level + 2} class="partners__point-title">
+                  {point.title}
+                </Heading>
+                <p>{point.text}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section class="partners__block" aria-labelledby="partners-reach-title">
+        <Heading level={level + 1} id="partners-reach-title" class="partners__heading">{data.reach.title}</Heading>
+        <div class="partners__reach">
+          <ul class="partners__audiences">
+            {data.reach.audiences.map((audience) => <li>{audience}</li>)}
+          </ul>
+          <p class="partners__reach-text">{data.reach.text}</p>
+        </div>
+      </section>
+
+      <aside class="partners__cta panel-graphite" aria-labelledby="partners-cta-title">
+        <div class="partners__cta-text">
+          <Heading level={level + 1} id="partners-cta-title" class="partners__cta-title">{data.cta.title}</Heading>
+          <p>{data.cta.text}</p>
+          <p class="partners__contact">
+            <strong>{sponsorName}</strong>
+            <span aria-hidden="true"> · </span>
+            <a class="partners__mail mono" href={`mailto:${sponsorEmail}`}>{sponsorEmail}</a>
+          </p>
+        </div>
+        <a class="btn btn--primary" href={`mailto:${sponsorEmail}`}>
+          {data.cta.button}
+          <Icon name="arrow-right" size="1.1em" />
+        </a>
+      </aside>
+    </div>
+
+    {
+      groups.length > 0 && (
+        <div class="logo-wall">
+          <Heading level={level + 1} class="eyebrow">{t('partners.wallTitle')}</Heading>
+          {groups.map((group) => (
+            <div class="logo-wall__group">
+              <Heading level={level + 2} class="logo-wall__tier">{group.name}</Heading>
+              <ul class="logo-wall__list">
+                {group.partners.map((p) => {
+                  const logo = p.image ? (
+                    <Image src={p.image} alt={p.name} height={96} class="logo-wall__img" />
+                  ) : (
+                    <span class="logo-wall__name">{p.name}</span>
+                  );
+                  return (
+                    <li class="logo-wall__item">
+                      {p.url ? (
+                        <a href={p.url} rel="noopener noreferrer" target="_blank">
+                          {logo}
+                        </a>
+                      ) : (
+                        logo
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  /* Blocks: heading left, content right (stacked on small screens) */
+  .partners__body {
+    display: grid;
+  }
+  .partners__block {
+    display: grid;
+    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    gap: 1.25rem clamp(2rem, 6vw, 5rem);
+    padding-block: clamp(2rem, 4vw, 3rem);
+    border-top: 1px solid var(--color-border);
+  }
+  .partners__block:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+  .partners__heading {
+    font-size: var(--step-2);
+  }
+  .partners__focus {
+    max-width: 60ch;
+  }
+
+  .partners__points {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem clamp(1.25rem, 3vw, 2rem);
+    list-style: none;
+  }
+  .partners__point {
+    display: grid;
+    align-content: start;
+    gap: 0.6rem;
+    padding-top: 1rem;
+    border-top: 2px solid var(--color-text);
+  }
+  .partners__point-title {
+    font-size: var(--step-1);
+    line-height: 1.2;
+  }
+  .partners__point p {
+    color: var(--color-muted);
+  }
+
+  .partners__reach {
+    display: grid;
+    gap: 1.25rem;
+  }
+  .partners__audiences {
+    display: grid;
+    gap: 0.6rem;
+    list-style: none;
+    font-family: var(--font-heading);
+    font-size: var(--step-1);
+    font-weight: 500;
+    line-height: 1.3;
+  }
+  .partners__audiences li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+  .partners__audiences li::before {
+    content: '';
+    flex-shrink: 0;
+    width: 1rem;
+    height: 2px;
+    background: var(--color-accent);
+    transform: translateY(-0.3em);
+  }
+  .partners__reach-text {
+    max-width: 60ch;
+    color: var(--color-muted);
+  }
+
+  .partners__cta {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 1.5rem clamp(2rem, 5vw, 4rem);
+    margin-top: clamp(1rem, 3vw, 2rem);
+    padding: clamp(1.5rem, 4vw, 2.75rem);
+  }
+  .partners__cta-text {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .partners__cta-title {
+    font-size: var(--step-2);
+  }
+  .partners__contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.35rem;
+    align-items: baseline;
+  }
+  .partners__mail {
+    font-size: 0.9375rem;
+    color: var(--color-accent-text);
+    text-underline-offset: 0.2em;
+    word-break: break-all;
+  }
+
+  .logo-wall {
+    display: grid;
+    gap: 2rem;
+    margin-top: clamp(3rem, 6vw, 4.5rem);
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+  }
+  .logo-wall__group {
+    display: grid;
+    gap: 1rem;
+  }
+  .logo-wall__tier {
+    font-size: var(--step-1);
+  }
+  .logo-wall__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+    gap: 1rem;
+    list-style: none;
+  }
+  .logo-wall__item {
+    display: grid;
+    place-items: center;
+    min-height: 6rem;
+    padding: 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: #ffffff;
+  }
+  .logo-wall__item a {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+  }
+  .logo-wall__item :global(.logo-wall__img) {
+    max-height: 3.5rem;
+    width: auto;
+    object-fit: contain;
+  }
+  .logo-wall__name {
+    font-weight: 600;
+    color: #111111;
+  }
+
+  @media (max-width: 1000px) {
+    .partners__points {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+  @media (max-width: 860px) {
+    .partners__block,
+    .partners__cta {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .partners__cta {
+      justify-items: start;
+    }
+  }
+</style>
